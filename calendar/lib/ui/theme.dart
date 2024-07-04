@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 const Color bluishClr =Color(0xFF4e5ae8);
@@ -11,6 +12,7 @@ const Color darkHeaderClr =Color(0xFF424242);
 
 class Themes {
     static final light = ThemeData(
+        
         primaryColor: primaryClr,
         brightness: Brightness.light,
         appBarTheme: const AppBarTheme(
@@ -25,4 +27,13 @@ class Themes {
         backgroundColor: darkGreyClr,
     ),
       );
+}
+
+ TextStyle get subHeadingStyle{
+  return GoogleFonts.lato(
+    textStyle: const TextStyle(
+      fontSize: 24,
+      fontWeight: FontWeight.bold
+    )
+  );
 }
