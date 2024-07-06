@@ -12,6 +12,8 @@ class NotifyHelper {
   initializeNotification() async {
     tz.initializeTimeZones();
 
+    await requestNotificationPermissions(); // Request permissions before initializing
+
     final IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(
             requestSoundPermission: false,
@@ -49,8 +51,9 @@ class NotifyHelper {
         ?.createNotificationChannel(channel);
   }
 
-  void requestNotificationPermissions() async {
-    if (await Permission.notification.isDenied) {
+  Future<void> requestNotificationPermissions() async {
+    PermissionStatus status = await Permission.notification.status;
+    if (status.isDenied) {
       await Permission.notification.request();
     }
   }
