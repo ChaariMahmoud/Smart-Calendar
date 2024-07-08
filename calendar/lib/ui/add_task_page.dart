@@ -1,4 +1,7 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers, use_build_context_synchronously
+
 import 'package:calendar/ui/theme.dart';
+import 'package:calendar/ui/widgets/button.dart';
 import 'package:calendar/ui/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,6 +18,18 @@ class _AddTaskPageState extends State<AddTaskPage> {
    DateTime _selectedDate = DateTime.now() ;
    String _endTime = "11:59 PM";
    String _startTime = DateFormat("hh:mm a").format(DateTime.now()).toString();
+   int _selectedDifficulty = 1 ;
+   List<int> difficultyList =[
+    1,
+    2,
+    3,
+    4,
+    5
+   ];
+   int _selectedColor=0;
+   double _successPercentage = 50.0;
+    int _selectedPriority = 1;
+    final List<bool> _isSelected = List.generate(5, (index) => index == 0) ;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +46,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               Text("Add Task" ,
               style: headingStyle,),
               const MyInputField(title: "Title",hint: "Enter title here",),
-              const MyInputField(title: "Note",hint: "enter note here",),
+              const MyInputField(title: "Note",hint: "Enter note here",),
               const MyInputField(title: "Type",hint: "Enter type here",),
                MyInputField(title: "Date",
                hint: DateFormat.yMMMMd().format(_selectedDate),
@@ -49,6 +64,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           widget: IconButton(
                           icon: const Icon(Icons.access_time_rounded),
                           onPressed: () {
+                            _getTimeFromUser(isStartTime: true);
                           },
                             ),
                           ),) ,
@@ -59,7 +75,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           hint: _endTime,
                           widget: IconButton(
                           icon: const Icon(Icons.access_time_rounded),
-                          onPressed: () {},
+                          onPressed: () {
+                            _getTimeFromUser(isStartTime: false);
+                          },
           ),
         ),
                   
@@ -69,8 +87,88 @@ class _AddTaskPageState extends State<AddTaskPage> {
                  
                 ],
               ),
-              const MyInputField(title: "Success Percentage",hint: "Enter Success Percentage here",),
-              const MyInputField(title: "Difficulty",hint: "Enter difficulty here",),
+
+              MyInputField(
+                   title: "Difficulty",
+                   hint: "Select the difficulty level for your task",
+                   widget: DropdownButton(
+    icon: const Icon(Icons.keyboard_arrow_down_outlined,),
+    iconSize: 30,
+    elevation: 5,
+    style: subTitleStyle, 
+    underline: Container(height: 0,),
+    items: difficultyList.map<DropdownMenuItem<String>>((int value) {
+      return DropdownMenuItem<String>(
+        value: value.toString(),
+        child: Text(value.toString()),
+      );
+    }).toList(),
+
+    onChanged: (String? newValue) {
+      setState(() {
+        _selectedDifficulty = int.parse(newValue!);
+      });
+    },
+    value: _selectedDifficulty.toString(), 
+    
+  ),
+),
+ MyInputField(
+  title: "Priority",
+  hint: "$_selectedPriority",
+  widget: ToggleButtons(
+    isSelected: _isSelected,
+    onPressed: (int index) {
+      setState(() {
+        for (int i = 0; i < _isSelected.length; i++) {
+          _isSelected[i] = i == index;
+        }
+        _selectedPriority = index + 1;
+      });
+    },
+    children: List<Widget>.generate(5, (int index) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: Text((index + 1).toString()),
+      );
+    }),
+  ),
+),
+
+MyInputField(
+  title: "Success Percentage",
+  hint: "$_successPercentage%",
+  widget: Slider(
+    value: _successPercentage,
+    min: 0,
+    max: 100,
+    divisions: 100,
+    label: _successPercentage.round().toString(),
+    onChanged: (double value) {
+      setState(() {
+        _successPercentage = value;
+      });
+    },
+  ),
+),
+const SizedBox(height: 15,),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    _colorPalette (), 
+    Column(
+      children: [
+        const SizedBox(height: 12),
+        MyButton(label: "Add Task", onTap: () {}),
+      ],
+    )
+  ],
+)
+
+
+            
+              
               
             ],
           ),
@@ -119,6 +217,57 @@ class _AddTaskPageState extends State<AddTaskPage> {
       }
   }
 
+_getTimeFromUser({required bool isStartTime}) async {
+  var pickedTime = await _showTimePicker();
+  String _formatedTime =pickedTime.format(context);
+  if (isStartTime ==true){
+    setState(() {
+      _startTime = _formatedTime ;
+    });
+  } else {
+      setState(() {
+       _endTime = _formatedTime ;
+      });
+  }
+}
 
+_showTimePicker(){
+  return showTimePicker(context: context,
+   initialTime:  TimeOfDay(
+    hour: int.parse(_startTime.split(":")[0]),
+    minute: int.parse(_startTime.split(":")[1].split(" ")[0])),
+   initialEntryMode: TimePickerEntryMode.input 
+   );
+}
+
+
+_colorPalette(){
+  return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Color",
+        style: titleStyle,),
+        const SizedBox(height: 10,),
+        Wrap(
+          children: List<Widget>.generate(3, (int index){
+            return GestureDetector(
+              onTap: (){
+                 setState(() {
+                   _selectedColor = index ;
+                 });
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: CircleAvatar(radius: 15,backgroundColor: index==0?primaryClr:index==1?pinkClr:yellowClr,
+                child: _selectedColor ==index ?const Icon(Icons.done,color: Colors.white,size: 15,):Container()),
+              ),
+            );
+          },)
+
+          
+        )
+      ],
+    ) ;
+}
   
 }
