@@ -1,5 +1,6 @@
 import 'package:calendar/services/notification_services.dart';
 import 'package:calendar/services/theme_service.dart';
+import 'package:calendar/ui/add_task_page.dart';
 import 'package:calendar/ui/theme.dart';
 import 'package:calendar/ui/widgets/button.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
@@ -89,7 +90,7 @@ class _HomePageState extends State<HomePage> {
               Text("Today", style: headingStyle),
             ],
           ),
-          const MyButton(label: "+ Add Task", onTap: null)
+           MyButton(label: "+ Add Task", onTap: ()=> Get.to(const AddTaskPage()))
         ],
       ),
     );
