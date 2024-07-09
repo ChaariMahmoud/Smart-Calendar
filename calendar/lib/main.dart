@@ -1,4 +1,4 @@
-import 'package:calendar/db/database_helper.dart';
+import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/services/theme_service.dart';
 import 'package:calendar/ui/home_page.dart';
 import 'package:calendar/ui/theme.dart';
@@ -9,7 +9,7 @@ import 'package:get_storage/get_storage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  ///////////////////////////////////////////////////////////
+  await DBhelper().initDb();
   await GetStorage.init();
   runApp( const MyApp());
 }

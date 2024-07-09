@@ -1,3 +1,6 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:calendar/controllers/task_controller.dart';
 import 'package:calendar/services/notification_services.dart';
 import 'package:calendar/services/theme_service.dart';
 import 'package:calendar/ui/add_task_page.dart';
@@ -18,7 +21,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // Color dateTextColor = Get.isDarkMode ? Colors.white : Colors.black;
   String currentDate = DateFormat.yMMMMd().format(DateTime.now());
-
+  final _taskController = Get.put(TaskController());
   late NotifyHelper notifyHelper;
 
   @override
@@ -37,7 +40,10 @@ class _HomePageState extends State<HomePage> {
       body: Container(
         margin: const EdgeInsets.only(top: 12),
         child: Column(
-          children: [_addTaskBar(), _addDateBar()],
+          children: [_addTaskBar(), 
+                     _addDateBar(),
+                     _showTasks(),
+          ],
         ),
       ),
     );
@@ -90,7 +96,10 @@ class _HomePageState extends State<HomePage> {
               Text("Today", style: headingStyle),
             ],
           ),
-           MyButton(label: "+ Add Task", onTap: ()=> Get.to(const AddTaskPage()))
+           MyButton(label: "+ Add Task", onTap: () async {
+            await Get.to(()=> AddTaskPage()); 
+            _taskController.addTask();
+           })
         ],
       ),
     );
@@ -121,6 +130,30 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
+    );
+  }
+
+  _showTasks(){
+    return Expanded(
+      child: Obx((){
+        return ListView.builder(
+          itemCount: _taskController.taskList.length,
+          itemBuilder: (_,index){
+            print(_taskController.taskList.length);
+          return Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            width: 100,
+            height: 50,
+            color: Colors.red,
+            child: Text(
+              _taskController.taskList[index].title.toString(),
+            ),
+
+
+          ) ;
+        });
+
+      }),
     );
   }
 }

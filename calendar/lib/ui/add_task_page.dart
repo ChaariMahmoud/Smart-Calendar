@@ -273,8 +273,8 @@ _validateData(){
   }
 }
 
-_addtaskToDb(){
-  _taskController.addTask(
+_addtaskToDb() async {
+  int value =await _taskController.addTask(
     task: 
     Task (
     title: _titleController.text ,
@@ -288,6 +288,7 @@ _addtaskToDb(){
     priority: _selectedPriority ,
     color: _selectedColor ,
   ));
+  print("My id is "+"$value");
 }
 
 }

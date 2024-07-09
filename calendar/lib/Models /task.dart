@@ -38,16 +38,16 @@ class Task {
 
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
-      id: json['_id'],
+      id: json['id'],
       title: json['title'],
       note: json['note'],
+      type: json['type'],
       date :json['date'],
       beginTime: json['beginTime'],
       endTime: json['endTime'],
       priority: json['priority'],
       difficulty: json['difficulty'],
       userId: json['userId'] ?? '',
-      type: json['type'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       successPercentage: json['successPercentage'],
@@ -57,16 +57,16 @@ class Task {
 
   Map<String, dynamic> toJson() {
     return {
-      '_id': id,
+      'id': id,
       'title': title,
       'note': note,
-      
+      'type': type,
+      'date' : date ,
       'beginTime': beginTime,
       'endTime': endTime,
       'priority': priority,
       'difficulty': difficulty,
       'userId': userId,
-      'type': type,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
       'color': color,
