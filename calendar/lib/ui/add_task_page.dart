@@ -1,5 +1,7 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, use_build_context_synchronously
 
+import 'package:calendar/Models%20/task.dart';
+import 'package:calendar/controllers/task_controller.dart';
 import 'package:calendar/ui/theme.dart';
 import 'package:calendar/ui/widgets/button.dart';
 import 'package:calendar/ui/widgets/input_field.dart';
@@ -27,9 +29,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
     5
    ];
    int _selectedColor=0;
-   double _successPercentage = 50.0;
+   //double _successPercentage = 50.0;
     int _selectedPriority = 1;
     final List<bool> _isSelected = List.generate(5, (index) => index == 0) ;
+    final TextEditingController _titleController = TextEditingController() ;
+    final TextEditingController _noteController = TextEditingController() ;
+    final TextEditingController _typeController = TextEditingController() ;
+    final TaskController _taskController = Get.put(TaskController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,9 +51,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
             children: [
               Text("Add Task" ,
               style: headingStyle,),
-              const MyInputField(title: "Title",hint: "Enter title here",),
-              const MyInputField(title: "Note",hint: "Enter note here",),
-              const MyInputField(title: "Type",hint: "Enter type here",),
+               MyInputField(title: "Title",hint: "Enter title here",controller: _titleController,),
+               MyInputField(title: "Note",hint: "Enter note here",controller: _noteController,),
+               MyInputField(title: "Type",hint: "Enter type here",controller: _typeController,),
                MyInputField(title: "Date",
                hint: DateFormat.yMMMMd().format(_selectedDate),
                widget: IconButton(
@@ -135,22 +141,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   ),
 ),
 
-MyInputField(
-  title: "Success Percentage",
-  hint: "$_successPercentage%",
-  widget: Slider(
-    value: _successPercentage,
-    min: 0,
-    max: 100,
-    divisions: 100,
-    label: _successPercentage.round().toString(),
-    onChanged: (double value) {
-      setState(() {
-        _successPercentage = value;
-      });
-    },
-  ),
-),
+
 const SizedBox(height: 15,),
 Row(
   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -160,7 +151,7 @@ Row(
     Column(
       children: [
         const SizedBox(height: 12),
-        MyButton(label: "Add Task", onTap: () {}),
+        MyButton(label: "Add Task", onTap: () => _validateData()),
       ],
     )
   ],
@@ -171,6 +162,10 @@ Row(
       ),
     );
   }
+
+
+
+  //Refactor
 
   AppBar _appBar(BuildContext context) {
     
@@ -217,7 +212,7 @@ _getTimeFromUser({required bool isStartTime}) async {
   String _formatedTime =pickedTime.format(context);
   if (isStartTime ==true){
     setState(() {
-      _startTime = _formatedTime ;
+      _startTime = _formatedTime;
     });
   } else {
       setState(() {
@@ -264,5 +259,52 @@ _colorPalette(){
       ],
     ) ;
 }
-  
+
+
+_validateData(){
+  if(_titleController.text.isNotEmpty && _noteController.text.isNotEmpty && _typeController.text.isNotEmpty){
+     _addtaskToDb();
+    Get.back();
+  }else if (_titleController.text.isEmpty || _noteController.text.isEmpty ||_typeController.text.isEmpty){
+    Get.snackbar("Required", "All fields are required",
+    snackPosition: SnackPosition.BOTTOM,
+    backgroundColor: Colors.white,colorText: pinkClr,
+    icon: const Icon(Icons.warning_amber_rounded,color: Colors.red,));
+  }
 }
+
+_addtaskToDb(){
+  _taskController.addTask(
+    task: 
+    Task (
+    title: _titleController.text ,
+    note : _noteController.text ,
+    type: _typeController.text ,
+    date : DateFormat.yMd().format(_selectedDate),
+    beginTime: _startTime,
+    endTime: _endTime ,
+    successPercentage: 0.0,
+    difficulty: _selectedDifficulty ,
+    priority: _selectedPriority ,
+    color: _selectedColor ,
+  ));
+}
+
+}
+
+/*MyInputField(
+  title: "Success Percentage",
+  hint: "$_successPercentage%",
+  widget: Slider(
+    value: _successPercentage,
+    min: 0,
+    max: 100,
+    divisions: 100,
+    label: _successPercentage.round().toString(),
+    onChanged: (double value) {
+      setState(() {
+        _successPercentage = value;
+      });
+    },
+  ),
+)*/
