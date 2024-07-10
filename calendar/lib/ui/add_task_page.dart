@@ -274,22 +274,40 @@ _validateData(){
 }
 
 _addtaskToDb() async {
-  int value =await _taskController.addTask(
-    task: 
-    Task (
-    title: _titleController.text ,
-    note : _noteController.text ,
-    type: _typeController.text ,
-    date : DateFormat.yMd().format(_selectedDate),
+  
+
+  // Print values before creating the Task object
+  print("Title: ${_titleController.text}");
+  print("Note: ${_noteController.text}");
+  print("Type: ${_typeController.text}");
+  print("Date: ${DateFormat.yMd().format(_selectedDate)}");
+  print("Start Time: $_startTime");
+  print("End Time: $_endTime");
+  print("Difficulty: $_selectedDifficulty");
+  print("Priority: $_selectedPriority");
+  print("Color: $_selectedColor");
+
+  // Create a Task object
+  Task newTask = Task(
+    title: _titleController.text,
+    note: _noteController.text,
+    type: _typeController.text,
+    date: DateFormat.yMd().format(_selectedDate),
     beginTime: _startTime,
-    endTime: _endTime ,
+    endTime: _endTime,
     successPercentage: 0.0,
-    difficulty: _selectedDifficulty ,
-    priority: _selectedPriority ,
-    color: _selectedColor ,
-  ));
-  print("My id is "+"$value");
+    difficulty: _selectedDifficulty,
+    priority: _selectedPriority,
+    color: _selectedColor,
+  );
+
+  print("AddTaskToDb: Task details before insertion: ${newTask.toJson()}");
+
+  // Add task to the database
+  int value = await _taskController.addTask(task: newTask);
+  print("AddTaskToDb: My id is $value");
 }
+
 
 }
 

@@ -5,7 +5,7 @@ class Task {
   String title;
   String note;
   String type;
-  String date ;
+  String date;
   String beginTime;
   String endTime;
   int priority;
@@ -16,24 +16,22 @@ class Task {
   int color;
   double successPercentage;
 
-
   Task({
-    int? id,
-    required this.title ,
-    required this.note ,
-    required this .type ,
-    required this.date ,
+    this.id,
+    required this.title,
+    required this.note,
+    required this.type,
+    required this.date,
     required this.beginTime,
     required this.endTime,
     required this.priority,
     required this.difficulty,
-    this.userId = '', 
+    this.userId = '',
     DateTime? createdAt,
     DateTime? updatedAt,
     required this.color,
     required this.successPercentage,
-  }) :
-        createdAt = createdAt ?? DateTime.now(),
+  })  : createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now();
 
   factory Task.fromJson(Map<String, dynamic> json) {
@@ -42,7 +40,7 @@ class Task {
       title: json['title'],
       note: json['note'],
       type: json['type'],
-      date :json['date'],
+      date: json['date'],
       beginTime: json['beginTime'],
       endTime: json['endTime'],
       priority: json['priority'],
@@ -61,7 +59,7 @@ class Task {
       'title': title,
       'note': note,
       'type': type,
-      'date' : date ,
+      'date': date,
       'beginTime': beginTime,
       'endTime': endTime,
       'priority': priority,
@@ -80,5 +78,39 @@ class Task {
 
   static String listToJson(List<Task> list) {
     return json.encode(list.map((task) => task.toJson()).toList());
+  }
+
+  Task copyWith({
+    int? id,
+    String? title,
+    String? note,
+    String? type,
+    String? date,
+    String? beginTime,
+    String? endTime,
+    int? priority,
+    int? difficulty,
+    String? userId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? color,
+    double? successPercentage,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      note: note ?? this.note,
+      type: type ?? this.type,
+      date: date ?? this.date,
+      beginTime: beginTime ?? this.beginTime,
+      endTime: endTime ?? this.endTime,
+      priority: priority ?? this.priority,
+      difficulty: difficulty ?? this.difficulty,
+      userId: userId ?? this.userId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      color: color ?? this.color,
+      successPercentage: successPercentage ?? this.successPercentage,
+    );
   }
 }

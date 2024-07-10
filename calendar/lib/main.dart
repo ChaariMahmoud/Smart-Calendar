@@ -9,7 +9,8 @@ import 'package:get_storage/get_storage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DBhelper().initDb();
+  // Initialize the database
+  await DBhelper.initDb();
   await GetStorage.init();
   runApp( const MyApp());
 }

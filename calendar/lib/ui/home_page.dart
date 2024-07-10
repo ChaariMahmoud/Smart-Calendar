@@ -6,8 +6,10 @@ import 'package:calendar/services/theme_service.dart';
 import 'package:calendar/ui/add_task_page.dart';
 import 'package:calendar/ui/theme.dart';
 import 'package:calendar/ui/widgets/button.dart';
+import 'package:calendar/ui/widgets/task_tile.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -42,6 +44,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [_addTaskBar(), 
                      _addDateBar(),
+                      SizedBox(height: 12),
                      _showTasks(),
           ],
         ),
@@ -97,8 +100,10 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
            MyButton(label: "+ Add Task", onTap: () async {
-            await Get.to(()=> AddTaskPage()); 
-            _taskController.addTask();
+  
+               await Get.to(()=> AddTaskPage()); 
+               _taskController.getTasks();
+            
            })
         ],
       ),
@@ -140,17 +145,20 @@ class _HomePageState extends State<HomePage> {
           itemCount: _taskController.taskList.length,
           itemBuilder: (_,index){
             print(_taskController.taskList.length);
-          return Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            width: 100,
-            height: 50,
-            color: Colors.red,
-            child: Text(
-              _taskController.taskList[index].title.toString(),
-            ),
-
-
-          ) ;
+          return AnimationConfiguration.staggeredList(
+            position: index,
+            child: SlideAnimation(
+              child: FadeInAnimation(
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        
+                      },
+                      child: TaskTile(_taskController.taskList[index]),
+                    )
+                  ],
+                ))));
         });
 
       }),
