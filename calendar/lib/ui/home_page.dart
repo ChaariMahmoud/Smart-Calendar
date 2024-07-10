@@ -1,9 +1,11 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, avoid_print
 
+import 'package:calendar/Models%20/task.dart';
 import 'package:calendar/controllers/task_controller.dart';
 import 'package:calendar/services/notification_services.dart';
 import 'package:calendar/services/theme_service.dart';
 import 'package:calendar/ui/add_task_page.dart';
+import 'package:calendar/ui/edit_task_page.dart';
 import 'package:calendar/ui/theme.dart';
 import 'package:calendar/ui/widgets/button.dart';
 import 'package:calendar/ui/widgets/task_tile.dart';
@@ -21,7 +23,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Color dateTextColor = Get.isDarkMode ? Colors.white : Colors.black;
+ 
   String currentDate = DateFormat.yMMMMd().format(DateTime.now());
   final _taskController = Get.put(TaskController());
   late NotifyHelper notifyHelper;
@@ -33,6 +35,7 @@ class _HomePageState extends State<HomePage> {
     notifyHelper = NotifyHelper();
     notifyHelper.initializeNotification();
     notifyHelper.requestIOSPermissions();
+    _taskController.getTasks();
   }
 
   @override
@@ -103,6 +106,7 @@ class _HomePageState extends State<HomePage> {
   
                await Get.to(()=> AddTaskPage()); 
                _taskController.getTasks();
+               
             
            })
         ],
@@ -153,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        
+                        _showButtomSheet(context,_taskController.taskList[index]);
                       },
                       child: TaskTile(_taskController.taskList[index]),
                     )
@@ -163,5 +167,77 @@ class _HomePageState extends State<HomePage> {
 
       }),
     );
+  }
+
+   _showButtomSheet(BuildContext context, Task task){
+      Get.bottomSheet(
+        Container(
+          padding: EdgeInsets.only(top: 4),
+          height: MediaQuery.of(context).size.height*0.3,
+          width: MediaQuery.of(context).size.width,
+          color: Get.isDarkMode?darkGreyClr:Colors.white,
+          child: Column(
+            children: [
+              Container(
+                height: 6,
+                width: 120,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Get.isDarkMode?Colors.grey[600]:Colors.grey[300],
+                ),
+              ),
+               Spacer(),
+              _buttomSheetButton(label: "Update task ",clr: primaryClr ,onTap: () {
+                Get.back();
+                Get.to(() => EditTaskPage(task: task));
+                _taskController.getTasks();
+              },isColsed: false, context: context),
+              SizedBox(height: 10,),
+              _buttomSheetButton(label: "Delete task ",clr: Colors.red[300]! ,onTap: () {
+                _taskController.delete(task);
+                _taskController.getTasks();
+                Get.back();
+              },isColsed: false, context: context),
+              SizedBox(height: 20,),
+              _buttomSheetButton(label: " Close ",clr: Colors.red[300]! ,onTap: () {
+                Get.back();
+              },isColsed: true, context: context),
+              SizedBox(height: 10)
+            ],
+          ),
+        )
+      );
+   }
+
+  _buttomSheetButton ({
+    required String label ,
+    required Function ()? onTap,
+    required Color clr ,
+    bool isColsed =false ,
+    required BuildContext context ,
+  }){
+       return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          height: 55,
+          width: MediaQuery.of(context).size.width*0.9,
+          decoration: BoxDecoration(
+            color: isColsed==true?Colors.transparent:clr,
+            border :Border.all(
+              width: 2,
+              color: isColsed==true?Get.isDarkMode?Colors.grey[600]!:Colors.grey[300]!:clr,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: isColsed?titleStyle:titleStyle.copyWith(color: Colors.white),
+              
+            ),
+          ),
+        ),
+       );
   }
 }

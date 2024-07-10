@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, avoid_print, unnecessary_new
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -88,8 +90,8 @@ class NotifyHelper {
   scheduledNotification() async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
         0,
-        'scheduled title',
-        'theme changes 5 seconds ago',
+        'Theme changed',
+        'theme changed 5 seconds ago',
         tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
         const NotificationDetails(
             android: AndroidNotificationDetails(

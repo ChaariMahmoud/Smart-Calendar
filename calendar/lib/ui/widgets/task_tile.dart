@@ -16,7 +16,7 @@ class TaskTile extends StatefulWidget {
 
 class _TaskTileState extends State<TaskTile> {
   late double _successPercentage;
-  final TaskController _taskController = TaskController(); 
+  final TaskController _taskController = TaskController();
 
   @override
   void initState() {
@@ -29,9 +29,8 @@ class _TaskTileState extends State<TaskTile> {
       _successPercentage = value;
     });
 
-   
     Task updatedTask = widget.task!.copyWith(successPercentage: _successPercentage);
-    _taskController.updateTask(updatedTask);  
+    _taskController.updateTask(updatedTask);
   }
 
   @override
@@ -85,10 +84,10 @@ class _TaskTileState extends State<TaskTile> {
               ),
             ),
             const SizedBox(height: 12),
-             Text(
+            Text(
               "Type  :   ${widget.task?.type ?? ""}",
               style: GoogleFonts.lato(
-                textStyle:  TextStyle(
+                textStyle: TextStyle(
                   fontSize: 15,
                   color: Colors.grey[100],
                 ),
@@ -104,12 +103,11 @@ class _TaskTileState extends State<TaskTile> {
                 _updateSuccessPercentage(value);
               },
             ),
-            //const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
                   child: Text(
-                    widget.task!.successPercentage == 100 ? "COMPLETED" : "TODO",
+                    _successPercentage == 100 ? "COMPLETED" : "TODO",
                     style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                         fontSize: 10,

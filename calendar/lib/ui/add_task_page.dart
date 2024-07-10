@@ -1,4 +1,4 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers, use_build_context_synchronously
+// ignore_for_file: no_leading_underscores_for_local_identifiers, use_build_context_synchronously, avoid_print
 
 import 'package:calendar/Models%20/task.dart';
 import 'package:calendar/controllers/task_controller.dart';
@@ -310,20 +310,3 @@ _addtaskToDb() async {
 
 
 }
-
-/*MyInputField(
-  title: "Success Percentage",
-  hint: "$_successPercentage%",
-  widget: Slider(
-    value: _successPercentage,
-    min: 0,
-    max: 100,
-    divisions: 100,
-    label: _successPercentage.round().toString(),
-    onChanged: (double value) {
-      setState(() {
-        _successPercentage = value;
-      });
-    },
-  ),
-)*/
