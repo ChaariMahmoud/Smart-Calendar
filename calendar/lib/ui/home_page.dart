@@ -24,7 +24,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
  
-  String currentDate = DateFormat.yMMMMd().format(DateTime.now());
+  String currentDate = DateFormat.yMd().format(DateTime.now());
+  DateTime _selectedDate =DateTime.now();
   final _taskController = Get.put(TaskController());
   late NotifyHelper notifyHelper;
 
@@ -136,38 +137,53 @@ class _HomePageState extends State<HomePage> {
                 TextStyle(color: isDarkMode ? Colors.white : Colors.black),
             monthTextStyle:
                 TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+                onDateChange: (date) {
+                  setState(() {
+                    _selectedDate = date ;
+                  });
+                }
           );
         },
       ),
     );
   }
 
-  _showTasks(){
-    return Expanded(
-      child: Obx((){
-        return ListView.builder(
-          itemCount: _taskController.taskList.length,
-          itemBuilder: (_,index){
-            print(_taskController.taskList.length);
-          return AnimationConfiguration.staggeredList(
-            position: index,
-            child: SlideAnimation(
-              child: FadeInAnimation(
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        _showButtomSheet(context,_taskController.taskList[index]);
-                      },
-                      child: TaskTile(_taskController.taskList[index]),
-                    )
-                  ],
-                ))));
-        });
+  _showTasks() {
+  return Expanded(
+    child: Obx(() {
+      return ListView.builder(
+        itemCount: _taskController.taskList.length,
+        itemBuilder: (_, index) {
+          Task task = _taskController.taskList[index];
+          DateTime taskDate = DateFormat.yMd().parse(task.date);
+          
+          if (taskDate.isAtSameMomentAs(_selectedDate)) {
+            return AnimationConfiguration.staggeredList(
+              position: index,
+              child: SlideAnimation(
+                child: FadeInAnimation(
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          _showButtomSheet(context, task);
+                        },
+                        child: TaskTile(task),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          } else {
+            return Container();
+          }
+        },
+      );
+    }),
+  );
+}
 
-      }),
-    );
-  }
 
    _showButtomSheet(BuildContext context, Task task){
       Get.bottomSheet(
