@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               body: Get.isDarkMode
                   ? "Light Theme Activated"
                   : "Dark Theme Activated");
-          notifyHelper.scheduledNotification();
+         // notifyHelper.scheduledNotification();
         },
         child: Icon(
           isDark ? Icons.wb_sunny_outlined : Icons.nightlight_round,
@@ -140,6 +140,7 @@ class _HomePageState extends State<HomePage> {
                 onDateChange: (date) {
                   setState(() {
                     _selectedDate = date ;
+                    
                   });
                 }
           );
@@ -156,8 +157,22 @@ class _HomePageState extends State<HomePage> {
         itemBuilder: (_, index) {
           Task task = _taskController.taskList[index];
           DateTime taskDate = DateFormat.yMd().parse(task.date);
-          
           if (taskDate.isAtSameMomentAs(_selectedDate)) {
+          DateTime date;
+  try {
+    // Try to parse the time as 12-hour format first
+    date = DateFormat.jm().parse(task.beginTime.toString());
+  } catch (e) {
+    // If parsing fails, try to parse as 24-hour format
+    date = DateFormat("HH:mm").parse(task.beginTime.toString());
+  }
+  
+  var myTime = DateFormat("HH:mm").format(date);
+  notifyHelper.scheduledNotification(
+    int.parse(myTime.split(":")[0]),
+    int.parse(myTime.split(":")[1]),
+    task,
+  );
             return AnimationConfiguration.staggeredList(
               position: index,
               child: SlideAnimation(
