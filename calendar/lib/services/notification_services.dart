@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, unnecessary_new
 
+import 'package:calendar/ui/notified_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone_updated_gradle/flutter_native_timezone.dart';
 import 'package:get/get.dart';
@@ -73,9 +75,7 @@ class NotifyHelper {
     } else {
       print("Notification Done");
     }
-    Get.to(() => Container(
-          color: Colors.white,
-        ));
+    Get.to(()=>NotifiedPage(label : payload!));
   }
 
   void requestIOSPermissions() {
@@ -91,9 +91,9 @@ class NotifyHelper {
 
   scheduledNotification(int hour , int minutes , Task task) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        'Theme changed',
-        'theme changed 5 seconds ago',
+          task.id!.toInt(),
+          task.title,
+          task.note,
          _converTime(hour , minutes),
        // tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
         const NotificationDetails(
@@ -102,7 +102,8 @@ class NotifyHelper {
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
-            matchDateTimeComponents:DateTimeComponents.time);
+            matchDateTimeComponents:DateTimeComponents.time,
+            payload: "${task.title}|${task.note}|${task.type}|${task.difficulty.toString()}|${task.priority.toString()}|");
   }
 
   displayNotification({required String title, required String body}) async {
@@ -119,7 +120,8 @@ class NotifyHelper {
       title,
       body,
       platformChannelSpecifics,
-      payload: 'It could be anything you pass',
+      payload: null
+      
     );
     print("Notification shown");
   }

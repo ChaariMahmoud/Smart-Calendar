@@ -36,7 +36,8 @@ class _HomePageState extends State<HomePage> {
     notifyHelper = NotifyHelper();
     notifyHelper.initializeNotification();
     notifyHelper.requestIOSPermissions();
-    _taskController.getTasks();
+   _taskController.getTasks();
+   
   }
 
   @override
@@ -63,12 +64,11 @@ class _HomePageState extends State<HomePage> {
       leading: GestureDetector(
         onTap: () {
           ThemeService().switchTheme();
-          notifyHelper.displayNotification(
+          /*notifyHelper.displayNotification(
               title: "Theme changed",
               body: Get.isDarkMode
                   ? "Light Theme Activated"
-                  : "Dark Theme Activated");
-         // notifyHelper.scheduledNotification();
+                  : "Dark Theme Activated");     */             
         },
         child: Icon(
           isDark ? Icons.wb_sunny_outlined : Icons.nightlight_round,
@@ -106,7 +106,9 @@ class _HomePageState extends State<HomePage> {
            MyButton(label: "+ Add Task", onTap: () async {
   
                await Get.to(()=> AddTaskPage()); 
-               _taskController.getTasks();
+        
+                 _taskController.getTasks();
+               
                
             
            })
