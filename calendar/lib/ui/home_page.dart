@@ -29,11 +29,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
+    _taskController.getTasks();
     notifyHelper = NotifyHelper();
     notifyHelper.initializeNotification();
     notifyHelper.requestIOSPermissions();
-    _taskController.getTasks();
+    
   }
 
   @override
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
             DateTime.now(),
             height: 90,
             width: 80,
-            initialSelectedDate: DateTime.now(),
+            initialSelectedDate: DateTime.now().subtract(Duration(days: 1)),
             selectionColor: primaryClr,
             selectedTextColor: Colors.white,
             dateTextStyle: const TextStyle(
