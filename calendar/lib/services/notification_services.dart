@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, avoid_print, unnecessary_new
 
 import 'package:calendar/ui/notified_page.dart';
+import 'package:calendar/ui/widgets/task_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -26,7 +27,6 @@ class NotifyHelper {
             requestBadgePermission: false,
             requestAlertPermission: false,
             onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-
     final AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings("appicon");
 
@@ -89,22 +89,24 @@ class NotifyHelper {
         );
   }
 
-  scheduledNotification(int hour , int minutes , Task task) async {
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-          task.id!.toInt(),
-          task.title,
-          task.note,
-         _converTime(hour , minutes),
-       // tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-        const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'your channel id', 'your channel name')),
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-            matchDateTimeComponents:DateTimeComponents.time,
-            payload: "${task.title}|${task.note}|${task.type}|${task.difficulty.toString()}|${task.priority.toString()}|");
-  }
+ scheduledNotification(int hour, int minutes, Task task, TaskTile taskTile) async {
+  DateTime taskDate = DateTime.parse(task.date);  // Parse the task date
+  tz.TZDateTime scheduleDate = _convertDateTime(taskDate, hour, minutes);
+
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+    task.id!.toInt(),
+    task.title,
+    task.note,
+    scheduleDate,
+    const NotificationDetails(
+      android: AndroidNotificationDetails('your_channel_id', 'your_channel_name'),
+    ),
+    androidAllowWhileIdle: true,
+    uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+    matchDateTimeComponents: DateTimeComponents.time,
+    payload: "${task.title}|${task.note}|${task.type}|${task.difficulty.toString()}|${task.priority.toString()}|",
+  );
+}
 
   displayNotification({required String title, required String body}) async {
     print("Displaying notification: $title, $body");
@@ -127,14 +129,15 @@ class NotifyHelper {
   }
 
 
-  tz.TZDateTime _converTime(int hour , int minutes){
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduleDate = tz.TZDateTime(tz.local, now.year,now.month,now.day,hour,minutes);
-    if (scheduleDate.isBefore(now)){
-      scheduleDate = scheduleDate.add(Duration(days: 1));
-    }
-    return scheduleDate ;
+  tz.TZDateTime _convertDateTime(DateTime taskDate, int hour, int minutes) {
+  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+  tz.TZDateTime scheduleDate = tz.TZDateTime(tz.local, taskDate.year, taskDate.month, taskDate.day, hour, minutes);
+  if (scheduleDate.isBefore(now)) {
+    scheduleDate = scheduleDate.add(Duration(days: 1));
   }
+  return scheduleDate;
+}
+
 
   Future<void> _configureLocalTimezone() async {
     tz.initializeTimeZones();
