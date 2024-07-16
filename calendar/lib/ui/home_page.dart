@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _taskController.getTasks();
+    _taskController.synchronizeTasks();
     notifyHelper = NotifyHelper();
     notifyHelper.initializeNotification();
     notifyHelper.requestIOSPermissions();
@@ -230,6 +231,8 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 _taskController.delete(task);
                 _taskController.getTasks();
+                _taskController.deleteTaskFromBackend(task.id!);
+                _taskController.synchronizeTasks(); 
                 Get.back();
               },
               isClosed: false,

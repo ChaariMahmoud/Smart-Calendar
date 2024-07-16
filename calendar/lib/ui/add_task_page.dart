@@ -306,6 +306,12 @@ _addtaskToDb() async {
   // Add task to the database
   int value = await _taskController.addTask(task: newTask);
   print("AddTaskToDb: My id is $value");
+
+  // Push the new task to the backend
+  await _taskController.pushTaskToBackend(newTask);
+
+  // Synchronize tasks after adding
+  await _taskController.synchronizeTasks();
 }
 
 

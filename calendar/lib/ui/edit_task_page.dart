@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+
 class EditTaskPage extends StatefulWidget {
   final Task task;
 
@@ -323,5 +324,11 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
     int value = await _taskController.updateTask(updatedTask);
     print("UpdateTaskToDb: Updated task id is $value");
+
+     // Update the task in the backend
+  await _taskController.updateTaskInBackend(updatedTask);
+
+  // Synchronize tasks after updating
+  await _taskController.synchronizeTasks();
   }
 }
