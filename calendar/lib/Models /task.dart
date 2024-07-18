@@ -48,7 +48,7 @@ class Task {
       userId: json['userId'] ?? '',
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      successPercentage: json['successPercentage'],
+      successPercentage: json['successPercentage'].toDouble(),
       color: json['color'] ?? 0,
     );
   }
@@ -71,7 +71,6 @@ class Task {
       'successPercentage': successPercentage,
     };
   }
-
   static List<Task> listFromJson(List<dynamic> json) {
     return json.map((value) => Task.fromJson(value)).toList();
   }

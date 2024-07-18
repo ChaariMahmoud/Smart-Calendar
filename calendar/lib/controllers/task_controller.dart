@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:calendar/Models%20/task.dart';
@@ -34,7 +36,7 @@ class TaskController extends GetxController {
 
 
   Future<void> fetchTasksFromBackend() async {
-    final response = await http.get(Uri.parse('http://192.168.1.42:3000/api/tasks/tasks'));
+    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/tasks/tasks'));
 
     if (response.statusCode == 200) {
       List<dynamic> taskData = json.decode(response.body);
@@ -44,7 +46,7 @@ class TaskController extends GetxController {
         await DBhelper.insert(task);
       }
 
-      getTasks(); // Refresh the local task list
+      getTasks(); 
     } else {
       throw Exception('Failed to load tasks');
     }
@@ -65,36 +67,63 @@ class TaskController extends GetxController {
   }
 
   Future<void> pushTaskToBackend(Task task) async {
+  try {
     final response = await http.post(
-      Uri.parse('http://192.168.1.42/api/tasks/tasks'),
+      Uri.parse('http://10.0.2.2:3000/api/tasks/tasks'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(task.toJson()),
     );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
 
     if (response.statusCode != 201) {
-      throw Exception('Failed to push task to backend');
+      throw Exception('Failed to push task to backend: ${response.body}');
     }
+  } catch (e) {
+    print('Exception: $e');
+    rethrow;
   }
-
+}
   Future<void> updateTaskInBackend(Task task) async {
+  try {
     final response = await http.put(
-      Uri.parse('http://192.168.1.42:3000/api/tasks/tasks${task.id}'),
+      Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/${task.id}'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(task.toJson()),
     );
 
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update task in backend');
-    }
-  }
+    print('PUT request URL: ${response.request!.url}');
+    print('PUT request headers: ${response.request!.headers}');
+    print('PUT response status code: ${response.statusCode}');
+    print('PUT response body: ${response.body}');
 
-  Future<void> deleteTaskFromBackend(int id) async {
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update task in backend: ${response.body}');
+    }
+  } catch (e) {
+    print('Exception during PUT request: $e');
+    rethrow; 
+  }
+}
+
+ Future<void> deleteTaskFromBackend(int id) async {
+  try {
     final response = await http.delete(
-      Uri.parse('http://192.168.1.42:3000/api/tasks/tasks/$id'),
+      Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/$id'),
     );
 
+    print('DELETE request URL: ${response.request!.url}');
+    print('DELETE request headers: ${response.request!.headers}');
+    print('DELETE response status code: ${response.statusCode}');
+    print('DELETE response body: ${response.body}');
+
     if (response.statusCode != 200) {
-      throw Exception('Failed to delete task from backend');
+      throw Exception('Failed to delete task from backend: ${response.body}');
     }
+  } catch (e) {
+    print('Exception during DELETE request: $e');
+    rethrow; 
   }
+}
 }
