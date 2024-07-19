@@ -1,7 +1,10 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, use_build_context_synchronously, avoid_print
 
+import 'dart:io';
+
 import 'package:calendar/Models%20/task.dart';
 import 'package:calendar/controllers/task_controller.dart';
+import 'package:calendar/services/camera_service.dart';
 import 'package:calendar/ui/theme.dart';
 import 'package:calendar/ui/widgets/button.dart';
 import 'package:calendar/ui/widgets/input_field.dart';
@@ -18,6 +21,7 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+   final cameraService = CameraService();
    DateTime _selectedDate = DateTime.now() ;
    String _endTime = "11:59 PM";
    String _startTime = DateFormat("hh:mm a").format(DateTime.now()).toString();
@@ -181,16 +185,20 @@ Row(
           size: 25,
         ),
       ),
-      actions: [
+       actions: [
         IconButton(
-        icon: const Icon(Icons.camera_alt_outlined , size: 35,),
-        onPressed: () {
-          Get.back();
-        },
-      ),
-        const SizedBox(
-          width: 20,
-        )
+          icon: const Icon(Icons.camera_alt_outlined, size: 35),
+          onPressed: () async {
+            File? image = await cameraService.getImage();
+            if (image != null) {
+              await cameraService.uploadImage(image);
+              setState(() {
+                // Optionally update state if you want to show the image or any other action
+              });
+            }
+          },
+        ),
+        const SizedBox(width: 20),
       ],
     );
   }
