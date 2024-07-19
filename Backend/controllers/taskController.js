@@ -2,6 +2,10 @@ const Task = require('../models/task');
 
 exports.createTask = async (req, res) => {
   try {
+    const existingTask = await Task.findOne({ id: req.body.id });
+    if (existingTask) {
+      return res.status(409).send({ error: 'Task with this ID already exists' });
+    }
     const task = new Task(req.body);
     await task.save();
     res.status(201).send(task);
@@ -52,5 +56,14 @@ exports.deleteTask = async (req, res) => {
     res.status(200).send(task);
   } catch (error) {
     res.status(500).send(error);
+  }
+};
+
+exports.deleteAllTasks = async (req, res) => {
+  try {
+    const result = await Task.deleteMany({});
+    res.status(200).send({ message: 'All tasks deleted successfully', deletedCount: result.deletedCount });
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to delete all tasks' });
   }
 };

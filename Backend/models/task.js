@@ -1,26 +1,41 @@
 const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema({
-  name: {
+
+  _id: {
+    type: String,
+    required: false ,
+  },
+
+  id: { 
+    type: String,
+    required: false,
+    unique: true,
+    default: mongoose.Types.ObjectId.toString(),
+  },
+
+  title: {
     type: String,
     required: true,
   },
-  definition: {
+  note: {
     type: String,
     required: true,
   },
-  successPercentage: {
-    type: Number,
+  type: {
+    type: String,
     required: true,
-    min: 0,
-    max: 100,
+  },
+  date: {
+    type: String, 
+    required: true,
   },
   beginTime: {
-    type: Date,
+    type: String,
     required: true,
   },
   endTime: {
-    type: Date,
+    type: String,
     required: true,
   },
   priority: {
@@ -36,13 +51,8 @@ const taskSchema = new mongoose.Schema({
     max: 5,
   },
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  type: {
-    type: String,
-    required: true,
+    type: String, 
+    required: false,
   },
   createdAt: {
     type: Date,
@@ -52,9 +62,21 @@ const taskSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  color: {
+    type: Number,
+    default: 0,
+  },
+  successPercentage: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 100,
+  },
 });
 
+
 taskSchema.pre('save', function (next) {
+    this._id = this.id.toString(); // Ensure _id is set to id
   this.updatedAt = Date.now();
   next();
 });
