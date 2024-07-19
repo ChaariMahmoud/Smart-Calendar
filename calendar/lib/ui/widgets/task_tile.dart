@@ -15,15 +15,31 @@ class TaskTile extends StatefulWidget {
 }
 
 class _TaskTileState extends State<TaskTile> {
-  late double _successPercentage;
+   double _successPercentage = 0.0;
   final TaskController _taskController = TaskController();
 
   @override
   void initState() {
     super.initState();
-    _successPercentage = widget.task?.successPercentage ?? 0.0;
-  }
+    _initializeSuccessPercentage();
 
+  }
+  
+  void _initializeSuccessPercentage() async {
+    if (widget.task != null) {
+      Task? localTask = await _taskController.getLocalTaskById(widget.task!.id);
+      if (localTask != null) {
+        setState(() {
+          _successPercentage = localTask.successPercentage;
+        });
+      } else {
+        setState(() {
+          _successPercentage = widget.task!.successPercentage;
+        });
+      }
+    }
+  }
+  
   void _updateSuccessPercentage(double value) {
     setState(() {
       _successPercentage = value;
@@ -31,6 +47,8 @@ class _TaskTileState extends State<TaskTile> {
 
     Task updatedTask = widget.task!.copyWith(successPercentage: _successPercentage);
     _taskController.updateTask(updatedTask);
+    _taskController.updateTaskInBackend(updatedTask);
+    _taskController.synchronizeTasks();
   }
 
   @override

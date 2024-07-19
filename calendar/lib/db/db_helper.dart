@@ -24,7 +24,7 @@ class DBhelper {
           print("Creating new database");
           return db.execute(
             "CREATE TABLE $_tableName ("
-            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "id TEXT PRIMARY KEY," // Changed to TEXT
             "title TEXT NOT NULL,"
             "note TEXT NOT NULL,"
             "type TEXT NOT NULL,"
@@ -63,8 +63,8 @@ class DBhelper {
     return await _db!.query(_tableName);
   }
 
-  static  delete(Task task) async {
-     return await _db!.delete(_tableName,where: 'id=?',whereArgs: [task.id]);
+  static delete(Task task) async {
+    return await _db!.delete(_tableName, where: 'id=?', whereArgs: [task.id]);
   }
 
   static Future<int> update(Task task) async {

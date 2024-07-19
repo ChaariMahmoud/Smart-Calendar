@@ -1,7 +1,8 @@
 import 'dart:convert';
+import 'package:uuid/uuid.dart';
 
 class Task {
-  int? id;
+  String? id;
   String title;
   String note;
   String type;
@@ -32,11 +33,13 @@ class Task {
     required this.color,
     required this.successPercentage,
   })  : createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
+        updatedAt = updatedAt ?? DateTime.now() {
+    id ??= Uuid().v4(); // Generate a unique ID if null
+  }
 
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
-      id: json['id'],
+      id: json['_id'] ?? json['id'], // Handle both cases for ID
       title: json['title'],
       note: json['note'],
       type: json['type'],
@@ -48,8 +51,8 @@ class Task {
       userId: json['userId'] ?? '',
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
-      successPercentage: json['successPercentage'].toDouble(),
       color: json['color'] ?? 0,
+      successPercentage: json['successPercentage'].toDouble(),
     );
   }
 
@@ -71,6 +74,7 @@ class Task {
       'successPercentage': successPercentage,
     };
   }
+
   static List<Task> listFromJson(List<dynamic> json) {
     return json.map((value) => Task.fromJson(value)).toList();
   }
@@ -80,7 +84,7 @@ class Task {
   }
 
   Task copyWith({
-    int? id,
+    String? id,
     String? title,
     String? note,
     String? type,

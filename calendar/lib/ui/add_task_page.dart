@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
 
@@ -180,12 +181,14 @@ Row(
           size: 25,
         ),
       ),
-      actions: const [
-        CircleAvatar(
-          backgroundImage: AssetImage("images/profile.png"),
-          maxRadius: 18,
-        ),
-        SizedBox(
+      actions: [
+        IconButton(
+        icon: const Icon(Icons.camera_alt_outlined , size: 35,),
+        onPressed: () {
+          Get.back();
+        },
+      ),
+        const SizedBox(
           width: 20,
         )
       ],
@@ -287,8 +290,10 @@ _addtaskToDb() async {
   print("Priority: $_selectedPriority");
   print("Color: $_selectedColor");
 
+
   // Create a Task object
   Task newTask = Task(
+    
     title: _titleController.text,
     note: _noteController.text,
     type: _typeController.text,

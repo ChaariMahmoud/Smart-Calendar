@@ -197,14 +197,16 @@ class _EditTaskPageState extends State<EditTaskPage> {
           size: 25,
         ),
       ),
-      actions: const [
-        CircleAvatar(
-          backgroundImage: AssetImage("images/profile.png"),
-          maxRadius: 18,
-        ),
-        SizedBox(
+      actions: [
+        IconButton(
+        icon: const Icon(Icons.camera_alt_outlined , size: 35,),
+        onPressed: () {
+          Get.back();
+        },
+      ),
+        const SizedBox(
           width: 20,
-        ),
+        )
       ],
     );
   }

@@ -14,6 +14,7 @@ import 'package:timezone/timezone.dart' as tz;
 import '../Models /task.dart';
 
 class NotifyHelper {
+  
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   DateFormat format = DateFormat('M/d/yyyy');
@@ -91,11 +92,12 @@ class NotifyHelper {
   }
 
  scheduledNotification(int hour, int minutes, Task task, TaskTile taskTile) async {
+   int taskId = task.id.hashCode;
  DateTime taskDate = format.parse(task.date); // Parse the task date
   tz.TZDateTime scheduleDate = _convertDateTime(taskDate, hour, minutes);
 
   await flutterLocalNotificationsPlugin.zonedSchedule(
-    task.id!.toInt(),
+    taskId,
     task.title,
     task.note,
     scheduleDate,
