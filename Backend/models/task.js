@@ -76,7 +76,7 @@ const taskSchema = new mongoose.Schema({
 
 
 taskSchema.pre('save', function (next) {
-    this._id = this.id.toString(); // Ensure _id is set to id
+    this._id = this.id.toString(); 
   this.updatedAt = Date.now();
   next();
 });

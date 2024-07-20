@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes /userRoute');
 const taskRoutes = require('./routes /taskRoute');
 const uploadRoutes = require('./routes /uploadRoute');
+const surveyRoutes = require('./routes /surveyRoute');
 
 const app = express();
 
@@ -22,5 +23,5 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api', uploadRoutes); 
-
+app.use('/api', surveyRoutes);
 module.exports = app;

@@ -228,11 +228,11 @@ class _HomePageState extends State<HomePage> {
             _bottomSheetButton(
               label: "Delete Task",
               clr: Colors.red[300]!,
-              onTap: () {
+              onTap: () async {
                 _taskController.delete(task);
                 _taskController.getTasks();
-                _taskController.deleteTaskFromBackend(task.id!);
-                _taskController.synchronizeTasks(); 
+              await _taskController.deleteTaskFromBackend(task.id!);
+              await _taskController.synchronizeTasks(); 
                 Get.back();
               },
               isClosed: false,
