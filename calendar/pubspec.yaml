@@ -33,6 +33,8 @@ dependencies:
   http: ^1.2.2
   uuid: ^4.4.2
   image_picker: ^1.1.2
+  l: ^4.0.2
+  local_auth: ^2.2.0
   
 dev_dependencies:
   flutter_test:

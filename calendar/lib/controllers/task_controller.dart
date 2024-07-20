@@ -5,6 +5,7 @@ import 'package:calendar/Models%20/task.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class TaskController extends GetxController {
@@ -158,5 +159,58 @@ class TaskController extends GetxController {
   Future<bool> _taskExistsInBackend(String id) async {
     final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/$id'));
     return response.statusCode == 200;
+  }
+
+Future<List<Task>> getPreviousDayTasks() async {
+  List<Map<String, dynamic>> tasks = await DBhelper.query();
+  DateTime now = DateTime.now();
+  DateTime startOfToday = DateTime(now.year, now.month, now.day);
+  DateTime startOfYesterday = startOfToday.subtract(const Duration(days: 1));
+
+  // List of possible date formats
+  final List<DateFormat> dateFormats = [
+    DateFormat('yyyy-MM-dd'),
+    DateFormat('M/d/yyyy'),
+    DateFormat('MM/dd/yyyy'),
+    DateFormat('yyyy-MM-dd HH:mm:ss'),
+    // Add more formats as needed
+  ];
+
+  return tasks
+      .map((data) => Task.fromJson(data))
+      .where((task) {
+        DateTime? taskDate;
+        for (var format in dateFormats) {
+          try {
+            taskDate = format.parse(task.date);
+            break; // Exit loop if parsing is successful
+          } catch (e) {
+            // Continue with next format
+          }
+        }
+
+        if (taskDate == null) {
+          // Handle case where no format could parse the date
+          return false;
+        }
+
+        return taskDate.isBefore(startOfToday) && taskDate.isAfter(startOfYesterday);
+      })
+      .toList();
+}
+
+  Future<void> deletePreviousDayTasks() async {
+    List<Task> previousDayTasks = await getPreviousDayTasks();
+
+    for (Task task in previousDayTasks) {
+      await DBhelper.delete(task);
+    }
+
+    // Refresh the local task list after deletion
+    getTasks();
+  }
+
+  void deleteLocalPreviousDayTasks() async {
+    await deletePreviousDayTasks();
   }
 }

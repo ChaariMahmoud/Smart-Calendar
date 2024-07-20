@@ -121,27 +121,49 @@ class _EditTaskPageState extends State<EditTaskPage> {
                   ),
                 ],
               ),
-              MyInputField(
-                title: "Difficulty",
-                hint: "Select the difficulty level for your task",
-                widget: DropdownButton(
-                  icon: const Icon(Icons.keyboard_arrow_down_outlined),
-                  iconSize: 30,
-                  elevation: 5,
-                  style: subTitleStyle,
-                  underline: Container(height: 0),
-                  items: difficultyList.map<DropdownMenuItem<String>>((int value) {
-                    return DropdownMenuItem<String>(
-                      value: value.toString(),
-                      child: Text(value.toString()),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      _selectedDifficulty = int.parse(newValue!);
-                    });
-                  },
-                  value: _selectedDifficulty.toString(),
+              Container(
+                margin: const EdgeInsets.only(top: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Difficulty",
+                      style: titleStyle,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.only(left: 15),
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<int>(
+                          isExpanded: true,
+                          icon: const Icon(Icons.keyboard_arrow_down_outlined),
+                          iconSize: 30,
+                          elevation: 5,
+                          style: subTitleStyle,
+                          items: difficultyList.map<DropdownMenuItem<int>>((int value) {
+                            return DropdownMenuItem<int>(
+                              value: value,
+                              child: Text(value.toString()),
+                            );
+                          }).toList(),
+                          onChanged: (int? newValue) {
+                            setState(() {
+                              _selectedDifficulty = newValue!;
+                            });
+                          },
+                          value: _selectedDifficulty,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               MyInputField(

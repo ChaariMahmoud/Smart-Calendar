@@ -5,9 +5,10 @@ const userRoutes = require('./routes /userRoute');
 const taskRoutes = require('./routes /taskRoute');
 const uploadRoutes = require('./routes /uploadRoute');
 const surveyRoutes = require('./routes /surveyRoute');
+const authRoutes = require('./routes /authRoute');
 
 const app = express();
-
+require('dotenv').config();
 const cors = require('cors');
 app.use(cors());
 
@@ -18,10 +19,12 @@ mongoose.connect('mongodb://0.0.0.0:27017/smart_calendar')
 
 // Middleware
 app.use(express.json());
-
+const authenticateToken = require('./middlewares/auth');
+const errorHandler = require('./middlewares/error');
 // Routes
 app.use('/api/users', userRoutes);
-app.use('/api/tasks', taskRoutes);
+app.use('/api/tasks',taskRoutes);
 app.use('/api', uploadRoutes); 
 app.use('/api', surveyRoutes);
+app.use('/api/auth', authRoutes);
 module.exports = app;

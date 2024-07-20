@@ -17,7 +17,12 @@ class NotifyHelper {
   
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  DateFormat format = DateFormat('M/d/yyyy');
+   final List<DateFormat> dateFormats = [
+    DateFormat('yyyy-MM-dd'),
+    DateFormat('M/d/yyyy'),
+    DateFormat('MM/dd/yyyy'),
+    DateFormat('yyyy-MM-dd HH:mm:ss'),
+  ];
   initializeNotification() async {
     _configureLocalTimezone();
 
@@ -93,7 +98,15 @@ class NotifyHelper {
 
  scheduledNotification(int hour, int minutes, Task task, TaskTile taskTile) async {
    int taskId = task.id.hashCode;
- DateTime taskDate = format.parse(task.date); // Parse the task date
+ DateTime taskDate = DateTime.now();
+        for (var format in dateFormats) {
+          try {
+            taskDate = format.parse(task.date);
+            break; 
+          } catch (e) {
+            // Continue with next format
+          }
+        }
   tz.TZDateTime scheduleDate = _convertDateTime(taskDate, hour, minutes);
 
   await flutterLocalNotificationsPlugin.zonedSchedule(
