@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_declarations
 
+import 'package:calendar/Models%20/user.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -8,6 +9,7 @@ import '../Models /task.dart';
 class DBhelper {
   static final int _version = 1;
   static final String _tableName = "tasks";
+  static final String _userTableName = "user";
   static Database? _db;
 
   static Future<void> initDb() async {
@@ -20,9 +22,9 @@ class DBhelper {
       _db = await openDatabase(
         _path,
         version: _version,
-        onCreate: (db, version) {
+        onCreate: (db, version) async {
           print("Creating new database");
-          return db.execute(
+          await db.execute(
             "CREATE TABLE $_tableName ("
             "id TEXT PRIMARY KEY," // Changed to TEXT
             "title TEXT NOT NULL,"
@@ -38,6 +40,14 @@ class DBhelper {
             "updatedAt TEXT NOT NULL,"
             "color INTEGER NOT NULL,"
             "successPercentage REAL NOT NULL"
+            ");",
+          );
+           await db.execute(
+            "CREATE TABLE $_userTableName ("
+            "id TEXT PRIMARY KEY,"
+            "name TEXT,"
+            "email TEXT,"
+            "token TEXT"
             ");",
           );
         },
@@ -80,4 +90,31 @@ class DBhelper {
       whereArgs: [task.id],
     );
   }
+
+// User-related methods
+  static Future<int> insertUser(User user) async {
+    if (_db == null) {
+      return Future.error("Database is not initialized");
+    }
+    return await _db!.insert(_userTableName, user.toJson());
+  }
+
+  static Future<List<User>> queryUsers() async {
+    if (_db == null) {
+      return Future.error("Database is not initialized");
+    }
+    final List<Map<String, dynamic>> maps = await _db!.query(_userTableName);
+    return List.generate(maps.length, (i) {
+      return User.fromJson(maps[i]);
+    });
+  }
+
+  static Future<int> deleteUser(String id) async {
+    if (_db == null) {
+      return Future.error("Database is not initialized");
+    }
+    return await _db!.delete(_userTableName, where: 'id=?', whereArgs: [id]);
+  }
 }
+  
+

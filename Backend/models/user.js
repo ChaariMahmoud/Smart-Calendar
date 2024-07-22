@@ -1,7 +1,21 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
+
 
 const userSchema = new mongoose.Schema({
+  _id: {
+    type: String,
+    required: false ,
+  },
+
+  id: { 
+    type: String,
+    required: false,
+    unique: true,
+    default: mongoose.Types.ObjectId.toString(),
+  },
+
   name: {
     type: String,
     required: true,
@@ -32,9 +46,11 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function (next) {
+  this._id = this.id.toString(); 
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 10);
   }
+  
   this.updatedAt = Date.now();
   next();
 });

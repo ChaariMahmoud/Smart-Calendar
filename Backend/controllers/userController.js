@@ -54,3 +54,12 @@ exports.deleteUser = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
+exports.deleteAllUsers = async (req, res) => {
+  try {
+    const result = await User.deleteMany({});
+    res.status(200).send({ message: 'All users deleted successfully', deletedCount: result.deletedCount });
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to delete all users' });
+  }
+};

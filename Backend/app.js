@@ -23,7 +23,7 @@ const authenticateToken = require('./middlewares/auth');
 const errorHandler = require('./middlewares/error');
 // Routes
 app.use('/api/users', userRoutes);
-app.use('/api/tasks',taskRoutes);
+app.use('/api/tasks', taskRoutes);
 app.use('/api', uploadRoutes); 
 app.use('/api', surveyRoutes);
 app.use('/api/auth', authRoutes);
