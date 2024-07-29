@@ -1,21 +1,19 @@
 import 'package:calendar/controllers/user_controller.dart';
-import 'package:calendar/ui/home_page.dart';
-import 'package:calendar/ui/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoginPage extends StatelessWidget {
+class OtpPage extends StatelessWidget {
   final UserController userController = Get.put(UserController());
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController otpController = TextEditingController();
 
-  LoginPage({super.key});
+  OtpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('OTP Verification', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,7 +22,7 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Welcome Back!',
+              'Verify Your Email',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -39,13 +37,12 @@ class LoginPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             TextField(
-              controller: passwordController,
+              controller: otpController,
               decoration: InputDecoration(
-                labelText: 'Password',
+                labelText: 'OTP',
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                prefixIcon: const Icon(Icons.lock),
+                prefixIcon: const Icon(Icons.security),
               ),
-              obscureText: true,
             ),
             const SizedBox(height: 30),
             ElevatedButton(
@@ -55,22 +52,13 @@ class LoginPage extends StatelessWidget {
               ),
               onPressed: () async {
                 try {
-                  await userController.loginUser(emailController.text, passwordController.text);
-                  // Navigate to home page on successful login
-                  Get.to(const HomePage());
+                  await userController.verifyOtp(emailController.text, otpController.text);
+                  Get.snackbar('Success', 'OTP verification successful', snackPosition: SnackPosition.BOTTOM);
                 } catch (e) {
-                  // Show error message
-                  Get.snackbar('Login Failed', e.toString(), snackPosition: SnackPosition.BOTTOM);
+                  Get.snackbar('OTP Verification Failed', e.toString(), snackPosition: SnackPosition.BOTTOM);
                 }
               },
-              child: const Text('Login', style: TextStyle(fontSize: 18)),
-            ),
-            const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                Get.to(RegisterPage());
-              },
-              child: const Text('Don\'t have an account? Register'),
+              child: const Text('Verify OTP', style: TextStyle(fontSize: 18)),
             ),
           ],
         ),

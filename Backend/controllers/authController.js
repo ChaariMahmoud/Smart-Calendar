@@ -5,16 +5,28 @@ const nodemailer = require('nodemailer');
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { userId, name, email, password } = req.body;
 
-    const user = new User({ name, email, password });
+    if (!userId || !name || !email || !password) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    // Check for existing user
+    const existingUser = await User.findOne({ $or: [{ userId }, { email }] });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User with this ID or email already exists' });
+    }
+
+    const user = new User({userId, name, email, password });
     await user.save();
 
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
+    console.error(error);  // Log the error for debugging
     res.status(500).json({ error: error.message });
   }
 };
+
 
 const loginUser = async (req, res) => {
   try {
@@ -96,3 +108,34 @@ const verifyOtp = async (req, res) => {
 };
 
 module.exports = { registerUser, loginUser, sendOtp, verifyOtp };
+
+
+
+/*
+const registerUser = async (req, res) => {
+  try {
+    const { userId, name, email, password } = req.body;
+
+    // Check if userId already exists
+    const existingUserById = await User.findOne({ userId });
+    if (existingUserById) {
+      return res.status(400).json({ error: 'User ID already exists' });
+    }
+
+    // Check if email already exists
+    const existingUserByEmail = await User.findOne({ email });
+    if (existingUserByEmail) {
+      return res.status(400).json({ error: 'Email already exists' });
+    }
+
+    // Create and save new user
+    const user = new User({ _id: userId, userId, name, email, password });
+    await user.save();
+
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+*/ 

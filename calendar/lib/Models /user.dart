@@ -1,22 +1,22 @@
 import 'package:uuid/uuid.dart';
 
 class User {
- String? id;
+ String userId = Uuid().v4();
   String name;
   String email;
   String token;
 
   User({
-    this.id, 
+    required this.userId, 
     required this.name, 
     required this.email,
      required this.token}){
-    id ??= Uuid().v4(); // Generate a unique ID if null
+    //userId ??= Uuid().v4(); 
   }
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
+      userId: json['userId'],
       name: json['name'],
       email: json['email'],
       token: json['token'],
@@ -25,7 +25,7 @@ class User {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'userId': userId,
       'name': name,
       'email': email,
       'token': token,

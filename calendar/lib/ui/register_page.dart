@@ -1,21 +1,26 @@
 import 'package:calendar/controllers/user_controller.dart';
-import 'package:calendar/ui/home_page.dart';
-import 'package:calendar/ui/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:uuid/uuid.dart';
 
-class LoginPage extends StatelessWidget {
+class RegisterPage extends StatelessWidget {
   final UserController userController = Get.put(UserController());
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+    String generateUniqueId() {
+    var uuid = const Uuid();
+    return uuid.v4();
+  }
+  
 
-  LoginPage({super.key});
+  RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Register', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,9 +29,18 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Welcome Back!',
+              'Create Account',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: 'Name',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                prefixIcon: const Icon(Icons.person),
+              ),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -55,22 +69,18 @@ class LoginPage extends StatelessWidget {
               ),
               onPressed: () async {
                 try {
-                  await userController.loginUser(emailController.text, passwordController.text);
-                  // Navigate to home page on successful login
-                  Get.to(const HomePage());
+                  await userController.registerUser(
+                     generateUniqueId(),
+                    nameController.text,
+                    emailController.text,
+                    passwordController.text
+                  );
+                  Get.snackbar('Success', 'Registration successful', snackPosition: SnackPosition.BOTTOM);
                 } catch (e) {
-                  // Show error message
-                  Get.snackbar('Login Failed', e.toString(), snackPosition: SnackPosition.BOTTOM);
+                  Get.snackbar('Registration Failed', e.toString(), snackPosition: SnackPosition.BOTTOM);
                 }
               },
-              child: const Text('Login', style: TextStyle(fontSize: 18)),
-            ),
-            const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                Get.to(RegisterPage());
-              },
-              child: const Text('Don\'t have an account? Register'),
+              child: const Text('Register', style: TextStyle(fontSize: 18)),
             ),
           ],
         ),
