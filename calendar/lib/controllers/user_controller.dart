@@ -14,7 +14,7 @@ class UserController extends GetxController {
     return uuid.v4();
   }
 
-  var user = User( userId : '',name:'', email: '', token: '').obs;
+  var user = User( userId : '',name:'', email: '', token: '',photo: '').obs;
 
   Future<void> loginUser(String email, String password) async {
   print('Attempting to log in user with email: $email');
@@ -38,7 +38,7 @@ class UserController extends GetxController {
       String? name = responseData['name'];
       String? email = responseData['email'];
       String? userId = responseData['userId'];
-
+      String? photo = responseData['photo']??"";
       // Validate required fields
       if (token != null && userId != null) {
         // Check if user already exists in local database
@@ -51,6 +51,7 @@ class UserController extends GetxController {
             name: name,
             email: email,
             token: token,
+            photo: photo??""
           );
 
           // Insert user into local database
@@ -70,6 +71,7 @@ class UserController extends GetxController {
           name: name,
           email: email,
           token: token,
+          photo:photo??""
         );
       } else {
         print('Incomplete response data');
@@ -164,7 +166,7 @@ class UserController extends GetxController {
     try {
       // Remove user from local database
       await DBhelper.deleteUser(user.value.userId!);
-      user.value = User(userId: '', name: '', email: '', token: '');
+      user.value = User(userId: '', name: '', email: '', token: '',photo: '');
       print('User logged out successfully');
     } catch (e) {
       print('Error during logout: $e');
@@ -209,6 +211,38 @@ class UserController extends GetxController {
       }
     } catch (e) {
       print('Error during set new password: $e');
+      rethrow;
+    }
+  }
+
+   Future<void> updateUserProfile({String? name, String? email, String? password, String? photo}) async {
+    String userId = user.value.userId!;
+    Map<String, dynamic> updateData = {};
+
+    if (name != null) updateData['name'] = name;
+    if (email != null) updateData['email'] = email;
+    if (password != null) updateData['password'] = password;
+    if (photo != null) updateData['photo'] = photo;
+
+    try {
+      final response = await http.put(
+        Uri.parse('http://10.0.2.2:3000/api/users/$userId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ${user.value.token}',
+        },
+        body: json.encode(updateData),
+      );
+
+      if (response.statusCode == 200) {
+        var responseData = json.decode(response.body);
+        user.value = User.fromJson(responseData);
+        await DBhelper.updateUser(user.value);
+      } else {
+        throw Exception('Failed to update profile');
+      }
+    } catch (e) {
+      print('Error updating profile: $e');
       rethrow;
     }
   }

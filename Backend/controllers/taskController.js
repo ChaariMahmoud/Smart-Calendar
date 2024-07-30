@@ -67,3 +67,14 @@ exports.deleteAllTasks = async (req, res) => {
     res.status(500).send({ error: 'Failed to delete all tasks' });
   }
 };
+exports.getTasksByUserId = async (req, res) => {
+  try {
+    const tasks = await Task.find({ userId: req.params.userId });
+    if (!tasks) {
+      return res.status(404).send();
+    }
+    res.status(200).send(tasks);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};

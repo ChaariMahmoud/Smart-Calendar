@@ -47,7 +47,8 @@ class DBhelper {
             "userId TEXT PRIMARY KEY,"
             "name TEXT ,"
             "email TEXT ,"
-            "token TEXT"
+            "token TEXT ,"
+            "photo TEXT"
             ");",
           );
         },

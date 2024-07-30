@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
   jwtToken: {
     type: String,
   },
+  photo: {
+    type: String,
+    default: '', // URL or base64 string of the user's photo
+  },
   createdAt: {
     type: Date,
     default: Date.now,

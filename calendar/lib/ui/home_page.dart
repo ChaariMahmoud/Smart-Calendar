@@ -4,11 +4,13 @@ import 'package:calendar/services/notification_services.dart';
 import 'package:calendar/services/theme_service.dart';
 import 'package:calendar/ui/add_task_page.dart';
 import 'package:calendar/ui/edit_task_page.dart';
+import 'package:calendar/ui/profile._page.dart';
 import 'package:calendar/ui/theme.dart';
 import 'package:calendar/ui/widgets/button.dart';
 import 'package:calendar/ui/widgets/task_tile.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -69,12 +71,18 @@ class _HomePageState extends State<HomePage> {
           size: 25,
         ),
       ),
-      actions: const [
-        CircleAvatar(
-          backgroundImage: AssetImage("images/profile.png"),
-          maxRadius: 18,
+      actions:   [
+        GestureDetector(
+          onTap: (){
+            Get.to(ProfilePage());
+          },
+          child: const CircleAvatar(
+            backgroundImage: AssetImage("images/profile.png"),
+            maxRadius: 18,
+          ),
         ),
-        SizedBox(
+
+        const SizedBox(
           width: 20,
         )
       ],
@@ -119,7 +127,7 @@ class _HomePageState extends State<HomePage> {
             DateTime.now(),
             height: 90,
             width: 80,
-            initialSelectedDate: DateTime.now().subtract(Duration(days: 1)),
+            initialSelectedDate: DateTime.now().subtract(const Duration(days: 1)),
             selectionColor: primaryClr,
             selectedTextColor: Colors.white,
             dateTextStyle: const TextStyle(

@@ -5,12 +5,13 @@ class User {
   String? name; // Corresponds to name in the backend
   String? email; // Corresponds to email in the backend
   String? token; // Corresponds to jwtToken in the backend
-
+  String? photo;
   User({
     this.userId,
     this.name,
     this.email,
     this.token,
+    this.photo
   }) {
     userId ??= const Uuid().v4();
   }
@@ -22,6 +23,7 @@ class User {
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       token: json['token'],
+      photo: json['photo']?? '',
     );
   }
 
@@ -32,6 +34,7 @@ class User {
       'name': name,
       'email': email,
       'token': token,
+      'photo': photo,
     };
   }
 }

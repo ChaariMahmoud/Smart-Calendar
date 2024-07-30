@@ -20,4 +20,6 @@ router.delete('/tasks/:id', taskController.deleteTask);
 // Delete all tasks
 router.delete('/tasks', taskController.deleteAllTasks);
 
+router.get('/tasks/user/:userId', taskController.getTasksByUserId);
+
 module.exports = router;
