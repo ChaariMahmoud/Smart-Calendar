@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:calendar/controllers/user_controller.dart';
+import 'package:calendar/ui/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 class RegisterPage extends StatelessWidget {
-  final UserController userController = Get.put(UserController());
+  
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final UserController userController = Get.put(UserController());
     String generateUniqueId() {
     var uuid = const Uuid();
     return uuid.v4();
@@ -76,8 +80,10 @@ class RegisterPage extends StatelessWidget {
                     passwordController.text
                   );
                   Get.snackbar('Success', 'Registration successful', snackPosition: SnackPosition.BOTTOM);
+                  sleep(Durations.short1);
+                  Get.to(LoginPage());
                 } catch (e) {
-                  Get.snackbar('Registration Failed', e.toString(), snackPosition: SnackPosition.BOTTOM);
+                  Get.snackbar('Registration Failed', "Something went wrong try again", snackPosition: SnackPosition.BOTTOM);
                 }
               },
               child: const Text('Register', style: TextStyle(fontSize: 18)),

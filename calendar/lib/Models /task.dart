@@ -27,7 +27,7 @@ class Task {
     required this.endTime,
     required this.priority,
     required this.difficulty,
-    this.userId = '',
+    this.userId = "",
     DateTime? createdAt,
     DateTime? updatedAt,
     required this.color,

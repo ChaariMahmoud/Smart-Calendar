@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_declarations
+// ignore_for_file: prefer_const_declarations, avoid_print, no_leading_underscores_for_local_identifiers
 
 import 'package:calendar/Models%20/user.dart';
 import 'package:sqflite/sqflite.dart';
@@ -44,10 +44,11 @@ class DBhelper {
           );
            await db.execute(
             "CREATE TABLE $_userTableName ("
-            "id TEXT PRIMARY KEY,"
-            "name TEXT,"
-            "email TEXT,"
-            "token TEXT"
+            "userId TEXT PRIMARY KEY,"
+            "name TEXT ,"
+            "email TEXT ,"
+            "token TEXT ,"
+            "otp TEXT"
             ");",
           );
         },
@@ -113,7 +114,7 @@ class DBhelper {
     if (_db == null) {
       return Future.error("Database is not initialized");
     }
-    return await _db!.delete(_userTableName, where: 'id=?', whereArgs: [id]);
+    return await _db!.delete(_userTableName, where: 'userId=?', whereArgs: [id]);
   }
 }
   

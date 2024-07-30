@@ -1,14 +1,14 @@
 import 'package:calendar/controllers/user_controller.dart';
 import 'package:calendar/ui/home_page.dart';
+import 'package:calendar/ui/otp_page.dart';
 import 'package:calendar/ui/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoginPage extends StatelessWidget {
-  final UserController userController = Get.put(UserController());
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  final UserController userController = Get.put(UserController());
   LoginPage({super.key});
 
   @override
@@ -60,7 +60,7 @@ class LoginPage extends StatelessWidget {
                   Get.to(const HomePage());
                 } catch (e) {
                   // Show error message
-                  Get.snackbar('Login Failed', e.toString(), snackPosition: SnackPosition.BOTTOM);
+                  Get.snackbar('Login Failed', "Email or password incorrect", snackPosition: SnackPosition.BOTTOM);
                 }
               },
               child: const Text('Login', style: TextStyle(fontSize: 18)),
@@ -71,6 +71,13 @@ class LoginPage extends StatelessWidget {
                 Get.to(RegisterPage());
               },
               child: const Text('Don\'t have an account? Register'),
+            ),
+            //const SizedBox(height: 5),
+            TextButton(
+              onPressed: () {
+                Get.to(OtpPage());
+              },
+              child: const Text('Forgrt password? Click here'),
             ),
           ],
         ),

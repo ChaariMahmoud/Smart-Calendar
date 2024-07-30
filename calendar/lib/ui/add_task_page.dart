@@ -332,6 +332,7 @@ _addtaskToDb() async {
     successPercentage: 0.0,
     difficulty: _selectedDifficulty,
     priority: _selectedPriority,
+    userId: "", //mapping here
     color: _selectedColor,
   );
 

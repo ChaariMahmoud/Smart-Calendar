@@ -14,38 +14,75 @@ class UserController extends GetxController {
     return uuid.v4();
   }
 
-  var user = User(userId: '', name: '', email: '', token: '').obs;
+  var user = User( name: '', email: '', token: '').obs;
 
   Future<void> loginUser(String email, String password) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/auth/login'),
-        body: {'email': email, 'password': password},
-      );
-      if (response.statusCode == 200) {
-        User loggedInUser = User.fromJson(json.decode(response.body));
+  print('Attempting to log in user with email: $email');
+  try {
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:3000/api/auth/login'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'email': email, 'password': password}),
+    );
+
+    print('Login response status code: ${response.statusCode}');
+    print('Login response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      
+      // Extract fields from the response
+      String? token = responseData['token'];
+      //String? name = responseData['name'];
+      //String? email = responseData['email'];
+      //String? userId = responseData['userId'];
+
+      // Validate required fields
+      if (token != null) {
+        // Create a User object using the data from the response
+        User loggedInUser = User(
+          //userId: userId,
+          //name: name,
+          //email: email,
+          token: token,
+        );
+
         user.value = loggedInUser;
 
         // Insert user into local database
-        await DBhelper.insertUser(loggedInUser);
+        //await DBhelper.insertUser(loggedInUser);
 
         print('User logged in successfully: ${user.value}');
       } else {
-        print('Login failed with status: ${response.statusCode}, body: ${response.body}');
-        throw Exception('Failed to log in');
+        print('Incomplete response data');
+        throw Exception('Failed to log in: Incomplete response data');
       }
-    } catch (e) {
-      print('Error during login: $e');
-      rethrow;
+    } else {
+      print('Login failed with status: ${response.statusCode}, body: ${response.body}');
+      throw Exception('Failed to log in');
     }
+  } catch (e) {
+    print('Error during login: $e');
+    rethrow;
   }
+}
 
-  Future<void> registerUser(String userId,String name, String email, String password) async {
+
+
+  Future<void> registerUser(String userId, String name, String email, String password) async {
+    print('Attempting to register user with email: $email');
     try {
       final response = await http.post(
         Uri.parse('http://10.0.2.2:3000/api/auth/register'),
-        body: {'userId': userId, 'name': name, 'email': email, 'password': password},
+        headers: {
+        'Content-Type': 'application/json',
+      },
+        body: json.encode({'userId': userId, 'name': name, 'email': email, 'password': password}),
       );
+      print('Registration response status code: ${response.statusCode}');
+      print('Registration response body: ${response.body}');
       if (response.statusCode == 201) {
         print('User registered successfully');
       } else {
@@ -59,11 +96,17 @@ class UserController extends GetxController {
   }
 
   Future<void> sendOtp(String email) async {
+    print('Attempting to send OTP to email: $email');
     try {
       final response = await http.post(
         Uri.parse('http://10.0.2.2:3000/api/auth/send-otp'),
-        body: {'email': email},
+         headers: {
+        'Content-Type': 'application/json',
+      },
+        body: jsonEncode({'email': email}) ,
       );
+      print('Send OTP response status code: ${response.statusCode}');
+      print('Send OTP response body: ${response.body}');
       if (response.statusCode != 200) {
         print('OTP send failed with status: ${response.statusCode}, body: ${response.body}');
         throw Exception('Failed to send OTP');
@@ -77,11 +120,17 @@ class UserController extends GetxController {
   }
 
   Future<void> verifyOtp(String email, String otp) async {
+    print('Attempting to verify OTP for email: $email');
     try {
       final response = await http.post(
         Uri.parse('http://10.0.2.2:3000/api/auth/verify-otp'),
-        body: {'email': email, 'otp': otp},
+        headers: {
+        'Content-Type': 'application/json',
+      },
+        body: jsonEncode({'email': email, 'otp': otp}),
       );
+      print('Verify OTP response status code: ${response.statusCode}');
+      print('Verify OTP response body: ${response.body}');
       if (response.statusCode != 200) {
         print('OTP verification failed with status: ${response.statusCode}, body: ${response.body}');
         throw Exception('Failed to verify OTP');
@@ -95,6 +144,7 @@ class UserController extends GetxController {
   }
 
   Future<void> logoutUser() async {
+    print('Attempting to log out user with ID: ${user.value.userId}');
     try {
       // Remove user from local database
       await DBhelper.deleteUser(user.value.userId!);
@@ -107,11 +157,15 @@ class UserController extends GetxController {
   }
 
   Future<void> fetchUserFromDb() async {
+    print('Attempting to fetch user from local database');
     try {
       List<User> users = await DBhelper.queryUsers();
+      print('Fetched users: $users');
       if (users.isNotEmpty) {
         user.value = users.first;
         print('User fetched from DB: ${user.value}');
+      } else {
+        print('No users found in local database');
       }
     } catch (e) {
       print('Error fetching user from DB: $e');

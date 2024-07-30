@@ -2,7 +2,7 @@ import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/services/theme_service.dart';
 import 'package:calendar/ui/login_page.dart';
 //import 'package:calendar/ui/home_page.dart';
-import 'package:calendar/ui/survey_page.dart';
+//import 'package:calendar/ui/survey_page.dart';
 import 'package:calendar/ui/theme.dart';
 
 import 'package:flutter/material.dart';
