@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
 
 exports.createUser = async (req, res) => {
   try {
@@ -33,10 +34,22 @@ exports.getUserById = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
+    // Extract user fields from request body
+    const { password } = req.body;
+
+    // Hash the password if it's included in the request
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      req.body.password = hashedPassword;
+    }
+
+    // Update the user with new data
     const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+
     if (!user) {
       return res.status(404).send();
     }
+
     res.status(200).send(user);
   } catch (error) {
     res.status(400).send(error);

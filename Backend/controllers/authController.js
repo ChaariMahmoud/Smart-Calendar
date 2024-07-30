@@ -61,7 +61,7 @@ const loginUser = async (req, res) => {
     user.jwtToken = token;
     await user.save();
 
-    res.status(200).json({token});
+    res.status(200).json({userId: user._id, name: user.name, email: user.email, token});
   } catch (error) {
     console.error('Error during user login:', error);  // Log the error for debugging
     res.status(500).json({ error: 'An error occurred while logging in. Please try again.' });
@@ -134,6 +134,34 @@ const verifyOtp = async (req, res) => {
     console.error('Error during OTP verification:', error);  // Log the error for debugging
     res.status(500).json({ error: 'An error occurred while verifying the OTP. Please try again.' });
   }
+
+
 };
 
-module.exports = { registerUser, loginUser, sendOtp, verifyOtp };
+
+const reset_password = async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user's password
+    user.password = newPassword;
+    await user.save();
+
+    // Send success response
+    res.status(200).json({ message: 'Password reset successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+module.exports = { registerUser, loginUser, sendOtp, verifyOtp ,reset_password};
