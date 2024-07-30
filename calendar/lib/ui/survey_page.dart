@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_final_fields, prefer_const_literals_to_create_immutables
 
+import 'package:calendar/Models%20/user.dart';
+import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/services/theme_service.dart';
 import 'package:calendar/ui/home_page.dart';
 import 'package:flutter/material.dart';
@@ -290,8 +292,13 @@ class _SurveyPageState extends State<SurveyPage> with SingleTickerProviderStateM
         _moodController.text.isNotEmpty &&
         _feelingsController.text.isNotEmpty &&
         _sleepHours > 0) {
+              // Fetch the logged-in user
+          User? loggedInUser = await DBhelper.getLoggedInUser();
+
+    // Ensure we have a logged-in user
+      String userId = loggedInUser!.userId!;
       Survey newSurvey = Survey(
-        userId: "test",
+        userId: userId, 
         preferredWorkHours: _preferredWorkHoursController.text,
         activeDays: _activeDaysOptions
             .asMap()

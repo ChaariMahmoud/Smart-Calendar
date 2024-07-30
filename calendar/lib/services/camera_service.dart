@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print
 
+import 'package:calendar/Models%20/user.dart';
+import 'package:calendar/db/db_helper.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -19,9 +22,13 @@ class CameraService {
   }
 
   Future<void> uploadImage(File image) async {
-    final uri = Uri.parse('http://10.0.2.2:3000/api/upload');
+         User? loggedInUser = await DBhelper.getLoggedInUser();
+
+    // Ensure we have a logged-in user
+      String userId = loggedInUser!.userId!;
+    final uri = Uri.parse('http://10.0.2.2:3000/api/upload/upload');
     var request = http.MultipartRequest('POST', uri)
-      ..fields['user'] = 'test_user'
+      ..fields['userId'] = userId
       ..files.add(await http.MultipartFile.fromPath('image', image.path));
 
     var response = await request.send();

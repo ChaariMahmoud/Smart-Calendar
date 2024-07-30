@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:calendar/Models%20/task.dart';
+import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/controllers/task_controller.dart';
+import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/services/camera_service.dart';
 import 'package:calendar/ui/theme.dart';
 import 'package:calendar/ui/widgets/button.dart';
@@ -338,6 +340,10 @@ class _EditTaskPageState extends State<EditTaskPage> {
   }
 
   _updateTaskInDb() async {
+        User? loggedInUser = await DBhelper.getLoggedInUser();
+
+    // Ensure we have a logged-in user
+      String userId = loggedInUser!.userId!;
     Task updatedTask = Task(
       id: widget.task.id,
       title: _titleController.text,
@@ -350,6 +356,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
       difficulty: _selectedDifficulty,
       priority: _selectedPriority,
       color: _selectedColor,
+      userId: userId
     );
 
     print("UpdateTaskToDb: Task details before update: ${updatedTask.toJson()}");

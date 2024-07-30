@@ -5,14 +5,12 @@ class User {
   String? name; // Corresponds to name in the backend
   String? email; // Corresponds to email in the backend
   String? token; // Corresponds to jwtToken in the backend
-  String? otp; // Corresponds to otp in the backend
 
   User({
     this.userId,
     this.name,
     this.email,
     this.token,
-    this.otp,
   }) {
     userId ??= const Uuid().v4();
   }
@@ -23,8 +21,7 @@ class User {
       userId: json['userId'],
       name: json['name'] ?? '',
       email: json['email'] ?? '',
-      token: json['jwtToken'],
-      otp: json['otp'],
+      token: json['token'],
     );
   }
 
@@ -34,8 +31,7 @@ class User {
       'userId': userId,
       'name': name,
       'email': email,
-      'jwtToken': token,
-      'otp': otp,
+      'token': token,
     };
   }
 }

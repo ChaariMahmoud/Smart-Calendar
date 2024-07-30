@@ -3,7 +3,9 @@
 import 'dart:io';
 
 import 'package:calendar/Models%20/task.dart';
+import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/controllers/task_controller.dart';
+import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/services/camera_service.dart';
 import 'package:calendar/ui/theme.dart';
 import 'package:calendar/ui/widgets/button.dart';
@@ -318,7 +320,10 @@ _addtaskToDb() async {
   print("Difficulty: $_selectedDifficulty");
   print("Priority: $_selectedPriority");
   print("Color: $_selectedColor");
+    User? loggedInUser = await DBhelper.getLoggedInUser();
 
+    // Ensure we have a logged-in user
+      String userId = loggedInUser!.userId!;
 
   // Create a Task object
   Task newTask = Task(
@@ -332,7 +337,7 @@ _addtaskToDb() async {
     successPercentage: 0.0,
     difficulty: _selectedDifficulty,
     priority: _selectedPriority,
-    userId: "", //mapping here
+    userId: userId, //mapping here
     color: _selectedColor,
   );
 

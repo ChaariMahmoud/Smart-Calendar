@@ -1,21 +1,21 @@
 import 'package:calendar/controllers/user_controller.dart';
-import 'package:calendar/ui/send_otp.dart';
-import 'package:calendar/ui/register_page.dart';
-import 'package:calendar/ui/survey_page.dart';
+import 'package:calendar/ui/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoginPage extends StatelessWidget {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class SetNewPasswordPage extends StatelessWidget {
   final UserController userController = Get.put(UserController());
-  LoginPage({super.key});
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+  final String email;
+
+  SetNewPasswordPage({Key? key, required this.email}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Set New Password', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,24 +24,25 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Welcome Back!',
+              'Set Your New Password',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
             TextField(
-              controller: emailController,
+              controller: passwordController,
               decoration: InputDecoration(
-                labelText: 'Email',
+                labelText: 'New Password',
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                prefixIcon: const Icon(Icons.email),
+                prefixIcon: const Icon(Icons.lock),
               ),
+              obscureText: true,
             ),
             const SizedBox(height: 20),
             TextField(
-              controller: passwordController,
+              controller: confirmPasswordController,
               decoration: InputDecoration(
-                labelText: 'Password',
+                labelText: 'Confirm Password',
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 prefixIcon: const Icon(Icons.lock),
               ),
@@ -54,30 +55,19 @@ class LoginPage extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               onPressed: () async {
-                try {
-                  await userController.loginUser(emailController.text, passwordController.text);
-                  // Navigate to home page on successful login
-                  Get.to(const SurveyPage());
-                } catch (e) {
-                  // Show error message
-                  Get.snackbar('Login Failed', "Email or password incorrect", snackPosition: SnackPosition.BOTTOM);
+                if (passwordController.text == confirmPasswordController.text) {
+                  try {
+                    await userController.setNewPassword(email, passwordController.text);
+                    Get.snackbar('Success', 'Password reset successful', snackPosition: SnackPosition.BOTTOM);
+                    Get.offAll(LoginPage()); // Navigate to login page after password reset
+                  } catch (e) {
+                    Get.snackbar('Password Reset Failed', e.toString(), snackPosition: SnackPosition.BOTTOM);
+                  }
+                } else {
+                  Get.snackbar('Password Mismatch', 'Passwords do not match', snackPosition: SnackPosition.BOTTOM);
                 }
               },
-              child: const Text('Login', style: TextStyle(fontSize: 18)),
-            ),
-            const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                Get.to(RegisterPage());
-              },
-              child: const Text('Don\'t have an account? Register'),
-            ),
-            //const SizedBox(height: 5),
-            TextButton(
-              onPressed: () {
-                Get.to(SendOtpPage());
-              },
-              child: const Text('Forgrt password? Click here'),
+              child: const Text('Set New Password', style: TextStyle(fontSize: 18)),
             ),
           ],
         ),

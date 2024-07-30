@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:calendar/Models%20/task.dart';
+import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +11,14 @@ import 'package:uuid/uuid.dart';
 
 class TaskController extends GetxController {
   var taskList = <Task>[].obs;
+
+  Future<String> getToken () async {
+        User? loggedInUser = await DBhelper.getLoggedInUser();
+
+    // Ensure we have a logged-in user
+      String token = loggedInUser!.token!;
+      return token ;
+  }
 
   // Generate a unique ID
   String generateUniqueId() {
@@ -50,7 +59,13 @@ class TaskController extends GetxController {
   }
 
   Future<void> fetchTasksFromBackend() async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/tasks/tasks'));
+     User? loggedInUser = await DBhelper.getLoggedInUser();
+
+    // Ensure we have a logged-in user
+      String token = loggedInUser!.token!;
+    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/tasks/tasks'),        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'},);
 
     if (response.statusCode == 200) {
       List<dynamic> taskData = json.decode(response.body);
@@ -85,10 +100,16 @@ class TaskController extends GetxController {
   }
 
   Future<void> pushTaskToBackend(Task task) async {
+         User? loggedInUser = await DBhelper.getLoggedInUser();
+
+    // Ensure we have a logged-in user
+      String token = loggedInUser!.token!;
     try {
       final response = await http.post(
         Uri.parse('http://10.0.2.2:3000/api/tasks/tasks'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'},
         body: json.encode(task.toJson()),
       );
 
@@ -109,10 +130,16 @@ class TaskController extends GetxController {
   }
 
   Future<void> updateTaskInBackend(Task task) async {
+         User? loggedInUser = await DBhelper.getLoggedInUser();
+
+    // Ensure we have a logged-in user
+      String token = loggedInUser!.token!;
     try {
       final response = await http.put(
         Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/${task.id}'),
-        headers: {'Content-Type': 'application/json'},
+                headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'},
         body: json.encode(task.toJson()),
       );
 
@@ -131,9 +158,16 @@ class TaskController extends GetxController {
   }
 
   Future<void> deleteTaskFromBackend(String id) async {
+         User? loggedInUser = await DBhelper.getLoggedInUser();
+
+    // Ensure we have a logged-in user
+      String token = loggedInUser!.token!;
     try {
       final response = await http.delete(
-        Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/$id'),
+        Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/$id',),
+                headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'},
       );
 
       print('DELETE request URL: ${response.request!.url}');
@@ -157,7 +191,14 @@ class TaskController extends GetxController {
   }
 
   Future<bool> _taskExistsInBackend(String id) async {
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/$id'));
+         User? loggedInUser = await DBhelper.getLoggedInUser();
+
+    // Ensure we have a logged-in user
+      String token = loggedInUser!.token!;
+    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/$id')  ,    
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'},);
     return response.statusCode == 200;
   }
 

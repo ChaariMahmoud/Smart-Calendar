@@ -47,8 +47,7 @@ class DBhelper {
             "userId TEXT PRIMARY KEY,"
             "name TEXT ,"
             "email TEXT ,"
-            "token TEXT ,"
-            "otp TEXT"
+            "token TEXT"
             ");",
           );
         },
@@ -97,8 +96,41 @@ class DBhelper {
     if (_db == null) {
       return Future.error("Database is not initialized");
     }
+     await _db!.delete(_userTableName);
     return await _db!.insert(_userTableName, user.toJson());
   }
+
+
+static Future<User?> getUserById(String userId) async {
+  if (_db == null) {
+    return Future.error("Database is not initialized");
+  }
+
+  final List<Map<String, dynamic>> maps = await _db!.query(
+    _userTableName,
+    where: 'userId = ?',
+    whereArgs: [userId],
+  );
+
+  if (maps.isNotEmpty) {
+    return User.fromJson(maps.first);
+  } else {
+    return null; // No user found with this ID
+  }
+}
+
+static Future<int> updateUser(User user) async {
+  if (_db == null) {
+    return Future.error("Database is not initialized");
+  }
+
+  return await _db!.update(
+    _userTableName,
+    user.toJson(),
+    where: 'userId = ?',
+    whereArgs: [user.userId],
+  );
+}
 
   static Future<List<User>> queryUsers() async {
     if (_db == null) {
@@ -116,6 +148,21 @@ class DBhelper {
     }
     return await _db!.delete(_userTableName, where: 'userId=?', whereArgs: [id]);
   }
+
+  static Future<User?> getLoggedInUser() async {
+  if (_db == null) {
+    return Future.error("Database is not initialized");
+  }
+
+  final List<Map<String, dynamic>> maps = await _db!.query(_userTableName);
+
+  if (maps.isNotEmpty) {
+    return User.fromJson(maps.first);
+  } else {
+    return null; // No user found
+  }
+}
+
 }
   
 

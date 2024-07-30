@@ -7,7 +7,6 @@ class Survey {
   String feelings;
   double sleepHours;
   String wakeUpTime;
-
   Survey({
     required this.userId,
     required this.preferredWorkHours,

@@ -14,7 +14,7 @@ class UserController extends GetxController {
     return uuid.v4();
   }
 
-  var user = User( name: '', email: '', token: '').obs;
+  var user = User( userId : '',name:'', email: '', token: '').obs;
 
   Future<void> loginUser(String email, String password) async {
   print('Attempting to log in user with email: $email');
@@ -35,26 +35,42 @@ class UserController extends GetxController {
       
       // Extract fields from the response
       String? token = responseData['token'];
-      //String? name = responseData['name'];
-      //String? email = responseData['email'];
-      //String? userId = responseData['userId'];
+      String? name = responseData['name'];
+      String? email = responseData['email'];
+      String? userId = responseData['userId'];
 
       // Validate required fields
-      if (token != null) {
-        // Create a User object using the data from the response
-        User loggedInUser = User(
-          //userId: userId,
-          //name: name,
-          //email: email,
+      if (token != null && userId != null) {
+        // Check if user already exists in local database
+        User? existingUser = await DBhelper.getUserById(userId);
+
+        if (existingUser == null) {
+          // Create a User object using the data from the response
+          User loggedInUser = User(
+            userId: userId,
+            name: name,
+            email: email,
+            token: token,
+          );
+
+          // Insert user into local database
+          await DBhelper.insertUser(loggedInUser);
+
+          print('User logged in and inserted into local database: ${loggedInUser}');
+        } else {
+          // Update existing user data if needed
+          existingUser.token = token; // Update token or other fields as necessary
+          await DBhelper.updateUser(existingUser);
+
+          print('User logged in and updated in local database: ${existingUser}');
+        }
+
+        user.value = existingUser ?? User(
+          userId: userId,
+          name: name,
+          email: email,
           token: token,
         );
-
-        user.value = loggedInUser;
-
-        // Insert user into local database
-        //await DBhelper.insertUser(loggedInUser);
-
-        print('User logged in successfully: ${user.value}');
       } else {
         print('Incomplete response data');
         throw Exception('Failed to log in: Incomplete response data');
@@ -169,6 +185,30 @@ class UserController extends GetxController {
       }
     } catch (e) {
       print('Error fetching user from DB: $e');
+      rethrow;
+    }
+  }
+
+   Future<void> setNewPassword(String email, String newPassword) async {
+    print('Attempting to set new password for email: $email');
+    try {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:3000/api/auth/reset-password'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'email': email, 'newPassword': newPassword}),
+      );
+      print('Set new password response status code: ${response.statusCode}');
+      print('Set new password response body: ${response.body}');
+      if (response.statusCode != 200) {
+        print('Set new password failed with status: ${response.statusCode}, body: ${response.body}');
+        throw Exception('Failed to set new password');
+      } else {
+        print('New password set successfully');
+      }
+    } catch (e) {
+      print('Error during set new password: $e');
       rethrow;
     }
   }
