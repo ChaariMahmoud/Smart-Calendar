@@ -74,6 +74,12 @@ class DBhelper {
     return await _db!.query(_tableName);
   }
 
+ static Future<int> deleteAllTasks() async {
+    if (_db == null) {
+      return Future.error("Database is not initialized");
+    }
+    return await _db!.delete(_tableName);
+  }
   static delete(Task task) async {
     return await _db!.delete(_tableName, where: 'id=?', whereArgs: [task.id]);
   }

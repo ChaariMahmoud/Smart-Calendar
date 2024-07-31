@@ -79,7 +79,22 @@ class _SurveyPageState extends State<SurveyPage> with SingleTickerProviderStateM
               const SizedBox(height: 10),
               _buildWakeUpTime(),
               const SizedBox(height: 20),
-              MyButton(label: "Submit Survey", onTap: _submitSurveyData),
+              
+              const SizedBox(height: 10), 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                      MyButton(
+              label: "Skip",
+              onTap: () {
+              Get.to(() => const HomePage());
+              
+             }),
+
+               MyButton(label: "Submit Survey", onTap: _submitSurveyData),
+                ],
+              )
+               
             ],
           ),
         ),

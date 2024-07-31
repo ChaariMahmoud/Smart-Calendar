@@ -214,10 +214,17 @@ Row(
           onPressed: () async {
             File? image = await cameraService.getImage();
             if (image != null) {
-              await cameraService.uploadImage(image);
-              setState(() {
-                // Optionally update state if you want to show the image or any other action
-              });
+              String? imageUrl = await cameraService.uploadImage(
+                image,
+                "taskId", // This should be the actual taskId after the task is created
+                "add",
+              );
+              if (imageUrl != null) {
+                print("Image uploaded: $imageUrl");
+                setState(() {
+                  // Optionally update state if you want to show the image or any other action
+                });
+              }
             }
           },
         ),

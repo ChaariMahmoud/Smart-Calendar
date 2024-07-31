@@ -37,6 +37,7 @@ dependencies:
   local_auth: ^2.2.0
   animate_do: ^3.3.4
   flare_flutter: ^3.0.2
+  path_provider: ^2.1.4
   
 dev_dependencies:
   flutter_test:

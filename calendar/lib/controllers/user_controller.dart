@@ -165,6 +165,7 @@ class UserController extends GetxController {
     print('Attempting to log out user with ID: ${user.value.userId}');
     try {
       // Remove user from local database
+      await DBhelper.deleteAllTasks();
       await DBhelper.deleteUser(user.value.userId!);
       user.value = User(userId: '', name: '', email: '', token: '',photo: '');
       print('User logged out successfully');
@@ -216,7 +217,15 @@ class UserController extends GetxController {
   }
 
    Future<void> updateUserProfile({String? name, String? email, String? password, String? photo}) async {
-    String userId = user.value.userId!;
+    User? loggedInUser = await DBhelper.getLoggedInUser();
+
+    // Ensure we have a logged-in user
+    if (loggedInUser == null) {
+      throw Exception('No logged in user found.');
+    }
+
+    String token = loggedInUser.token!;
+    String userId = loggedInUser.userId!;
     Map<String, dynamic> updateData = {};
 
     if (name != null) updateData['name'] = name;
@@ -229,21 +238,31 @@ class UserController extends GetxController {
         Uri.parse('http://10.0.2.2:3000/api/users/$userId'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${user.value.token}',
+          'Authorization': 'Bearer $token',
         },
         body: json.encode(updateData),
       );
 
       if (response.statusCode == 200) {
         var responseData = json.decode(response.body);
-        user.value = User.fromJson(responseData);
+
+        // Update user data while retaining the token
+        User updatedUser = User.fromJson(responseData);
+        updatedUser.token = token; // Ensure the token is retained
+
+        user.value = updatedUser;
         await DBhelper.updateUser(user.value);
+
+        Get.snackbar('Success', 'Profile updated successfully');
       } else {
-        throw Exception('Failed to update profile');
+        var responseData = json.decode(response.body);
+        throw Exception('Failed to update profile: ${responseData['message']}');
       }
     } catch (e) {
       print('Error updating profile: $e');
+      Get.snackbar('Error', 'Failed to update profile');
       rethrow;
     }
   }
+
 }

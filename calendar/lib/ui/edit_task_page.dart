@@ -228,13 +228,19 @@ class _EditTaskPageState extends State<EditTaskPage> {
      actions: [
         IconButton(
           icon: const Icon(Icons.camera_alt_outlined, size: 35),
-          onPressed: () async {
-            File? image = await cameraService.getImage();
+          onPressed: () async {File? image = await cameraService.getImage();
             if (image != null) {
-              await cameraService.uploadImage(image);
-              setState(() {
-                // Optionally update state if you want to show the image or any other action
-              });
+              String? imageUrl = await cameraService.uploadImage(
+                image,
+                "taskId", // This should be the actual taskId after the task is created
+                "update",
+              );
+              if (imageUrl != null) {
+                print("Image uploaded: $imageUrl");
+                setState(() {
+                  // Optionally update state if you want to show the image or any other action
+                });
+              }
             }
           },
         ),

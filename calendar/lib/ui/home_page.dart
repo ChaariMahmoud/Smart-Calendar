@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _taskController.getTasks();
     _taskController.synchronizeTasks();
-    _taskController.deleteLocalPreviousDayTasks();
+    //_taskController.deleteLocalPreviousDayTasks();
     notifyHelper = NotifyHelper();
     notifyHelper.initializeNotification();
     notifyHelper.requestIOSPermissions();

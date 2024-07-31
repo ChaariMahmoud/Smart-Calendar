@@ -6,7 +6,6 @@ import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class TaskController extends GetxController {
@@ -63,7 +62,8 @@ class TaskController extends GetxController {
 
     // Ensure we have a logged-in user
       String token = loggedInUser!.token!;
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/tasks/tasks'),        headers: {
+      String userId = loggedInUser.userId!;
+    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/user/$userId'),        headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'},);
 
@@ -202,7 +202,7 @@ class TaskController extends GetxController {
     return response.statusCode == 200;
   }
 
-Future<List<Task>> getPreviousDayTasks() async {
+/*Future<List<Task>> getPreviousDayTasks() async {
   List<Map<String, dynamic>> tasks = await DBhelper.query();
   DateTime now = DateTime.now();
   DateTime startOfToday = DateTime(now.year, now.month, now.day);
@@ -253,5 +253,5 @@ Future<List<Task>> getPreviousDayTasks() async {
 
   void deleteLocalPreviousDayTasks() async {
     await deletePreviousDayTasks();
-  }
+  }*/
 }
