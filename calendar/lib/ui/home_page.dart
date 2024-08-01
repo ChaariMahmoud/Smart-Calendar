@@ -10,7 +10,6 @@ import 'package:calendar/ui/widgets/button.dart';
 import 'package:calendar/ui/widgets/task_tile.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -76,10 +75,7 @@ class _HomePageState extends State<HomePage> {
           onTap: (){
             Get.to(ProfilePage());
           },
-          child: const CircleAvatar(
-            backgroundImage: AssetImage("images/profile.png"),
-            maxRadius: 18,
-          ),
+          child: const Icon(Icons.settings,size: 30,)
         ),
 
         const SizedBox(

@@ -1,11 +1,11 @@
 // services/camera_service.dart
 
+import 'dart:convert';
 import 'dart:io';
 import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class CameraService {
   final picker = ImagePicker();
@@ -21,26 +21,29 @@ class CameraService {
   }
 
   Future<String?> uploadImage(File image, String taskId, String action) async {
-    User? loggedInUser = await DBhelper.getLoggedInUser();
-    if (loggedInUser == null) {
-      print('User not logged in.');
-      return null;
-    }
+         User? loggedInUser = await DBhelper.getLoggedInUser();
 
-    String userId = loggedInUser.userId!;
-    final uri = Uri.parse('http://10.0.2.2:3000/api/photos/upload');
-    var request = http.MultipartRequest('POST', uri)
-      ..fields['taskId'] = taskId
-      ..fields['userId'] = userId
-      ..fields['action'] = action
-      ..files.add(await http.MultipartFile.fromPath('image', image.path));
+    // Ensure we have a logged-in user
+      String token = loggedInUser!.token!;
+      String userId = loggedInUser.userId!;
+    final bytes = await image.readAsBytes();
+    final base64Image = 'data:image/${image.path.split('.').last};base64,' + base64Encode(bytes);
 
-    var response = await request.send();
+    final uri = Uri.parse('http://10.0.2.2:3000/api/photo/upload');
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json','Authorization': 'Bearer $token'},
+      body: jsonEncode({
+        'taskId': taskId,
+        'userId': userId, // Replace with actual user ID
+        'action': action,
+        'imageData': base64Image,
+      }),
+    );
+
     if (response.statusCode == 200) {
-      var responseData = await response.stream.bytesToString();
-      var jsonResponse = json.decode(responseData);
       print('Image uploaded successfully.');
-      return jsonResponse['url'];
+      return 'Image uploaded successfully.';
     } else {
       print('Image upload failed with status: ${response.statusCode}');
       return null;

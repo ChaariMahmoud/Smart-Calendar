@@ -7,12 +7,14 @@ import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/controllers/task_controller.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/services/camera_service.dart';
+import 'package:calendar/ui/home_page.dart';
 import 'package:calendar/ui/theme.dart';
 import 'package:calendar/ui/widgets/button.dart';
 import 'package:calendar/ui/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 
 class AddTaskPage extends StatefulWidget {
@@ -23,6 +25,7 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  String taskId =const Uuid().v4();
    final cameraService = CameraService();
    DateTime _selectedDate = DateTime.now() ;
    String _endTime = "11:59 PM";
@@ -216,7 +219,7 @@ Row(
             if (image != null) {
               String? imageUrl = await cameraService.uploadImage(
                 image,
-                "taskId", // This should be the actual taskId after the task is created
+                taskId, // This should be the actual taskId after the task is created
                 "add",
               );
               if (imageUrl != null) {
@@ -224,6 +227,22 @@ Row(
                 setState(() {
                   // Optionally update state if you want to show the image or any other action
                 });
+                Get.snackbar(
+                "Success",
+                "Image uploaded successfully!",
+                snackPosition: SnackPosition.BOTTOM,
+                duration: Duration(seconds: 3),
+              );
+              Future.delayed(Duration(seconds: 3), () {
+                Get.to(HomePage()); // Redirect to home page
+              });
+              }else{
+                 Get.snackbar(
+                "Error",
+                "Image upload failed!",
+                snackPosition: SnackPosition.BOTTOM,
+                duration: Duration(seconds: 3),
+              );
               }
             }
           },
@@ -334,7 +353,7 @@ _addtaskToDb() async {
 
   // Create a Task object
   Task newTask = Task(
-    
+    id: taskId,
     title: _titleController.text,
     note: _noteController.text,
     type: _typeController.text,

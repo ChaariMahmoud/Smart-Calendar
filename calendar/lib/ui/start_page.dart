@@ -26,7 +26,7 @@ class StartPage extends StatelessWidget {
                     child: Container(
                       width: isWideScreen ? 200 : 150,
                       height: isWideScreen ? 200 : 150,
-                      child: Image.asset('images/profile.png'), // Use your image here
+                      child: Image.asset('images/logo.png'), // Use your image here
                     ),
                   ),
                 ),
