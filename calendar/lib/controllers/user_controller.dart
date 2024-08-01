@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:calendar/Models%20/user.dart';
+import 'package:calendar/core/config.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
@@ -20,7 +21,7 @@ class UserController extends GetxController {
   print('Attempting to log in user with email: $email');
   try {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/api/auth/login'),
+      Uri.parse('${Config.baseUrl}/api/auth/login'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -93,7 +94,7 @@ class UserController extends GetxController {
     print('Attempting to register user with email: $email');
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/auth/register'),
+        Uri.parse('${Config.baseUrl}/api/auth/register'),
         headers: {
         'Content-Type': 'application/json',
       },
@@ -117,7 +118,7 @@ class UserController extends GetxController {
     print('Attempting to send OTP to email: $email');
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/auth/send-otp'),
+        Uri.parse('${Config.baseUrl}/api/auth/send-otp'),
          headers: {
         'Content-Type': 'application/json',
       },
@@ -141,7 +142,7 @@ class UserController extends GetxController {
     print('Attempting to verify OTP for email: $email');
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/auth/verify-otp'),
+        Uri.parse('${Config.baseUrl}/api/auth/verify-otp'),
         headers: {
         'Content-Type': 'application/json',
       },
@@ -196,7 +197,7 @@ class UserController extends GetxController {
     print('Attempting to set new password for email: $email');
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/auth/reset-password'),
+        Uri.parse('${Config.baseUrl}/api/auth/reset-password'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -235,7 +236,7 @@ class UserController extends GetxController {
 
     try {
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:3000/api/users/$userId'),
+        Uri.parse('${Config.baseUrl}/api/users/$userId'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

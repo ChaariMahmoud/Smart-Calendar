@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+//import 'package:calendar/controllers/flask_controller.dart';
 
 
 class AddTaskPage extends StatefulWidget {
@@ -46,6 +47,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     final TextEditingController _noteController = TextEditingController() ;
     final TextEditingController _typeController = TextEditingController() ;
     final TaskController _taskController = Get.put(TaskController());
+   // final FlaskController _flaskController = Get.put(FlaskController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -233,6 +235,8 @@ Row(
                 snackPosition: SnackPosition.BOTTOM,
                 duration: Duration(seconds: 3),
               );
+              // Call the Flask API after the image is successfully uploaded
+              // await _flaskController.callFlaskAPI(taskId);
               Future.delayed(Duration(seconds: 3), () {
                 Get.to(HomePage()); // Redirect to home page
               });

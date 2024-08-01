@@ -1,4 +1,5 @@
 import 'package:calendar/Models%20/task.dart';
+import 'package:calendar/controllers/network_controller.dart';
 import 'package:calendar/controllers/task_controller.dart';
 import 'package:calendar/services/notification_services.dart';
 import 'package:calendar/services/theme_service.dart';
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   DateTime _selectedDate = DateTime.now();
   final TaskController _taskController = Get.put(TaskController());
   late NotifyHelper notifyHelper;
+  final NetworkController _networkController = Get.put(NetworkController());
 
   @override
   void initState() {
@@ -47,10 +49,19 @@ class _HomePageState extends State<HomePage> {
         margin: const EdgeInsets.only(top: 12),
         child: Column(
           children: [
+            Obx(() {
+      if (!_networkController.isOnline.value) {
+        _showSnackBar(context, 'You are offline', Colors.red);
+      } else {
+        _showSnackBar(context, 'You are online', Colors.green);
+      }
+      return const SizedBox.shrink(); // Return an empty widget as we use Snackbar
+    }),
             _addTaskBar(),
             _addDateBar(),
             const SizedBox(height: 12),
             _showTasks(),
+        
           ],
         ),
       ),
@@ -294,6 +305,19 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+    );
+  }
+
+
+   void _showSnackBar(BuildContext context, String message, Color backgroundColor) {
+    Get.snackbar(
+      '',
+      message,
+      backgroundColor: backgroundColor,
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+      duration: const Duration(seconds: 3), // Show for 3 seconds
+      margin: const EdgeInsets.all(10),
     );
   }
 }

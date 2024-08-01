@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'package:calendar/Models%20/task.dart';
 import 'package:calendar/Models%20/user.dart';
+import 'package:calendar/core/config.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -63,7 +64,7 @@ class TaskController extends GetxController {
     // Ensure we have a logged-in user
       String token = loggedInUser!.token!;
       String userId = loggedInUser.userId!;
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/user/$userId'),        headers: {
+    final response = await http.get(Uri.parse('${Config.baseUrl}/api/tasks/tasks/user/$userId'),        headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'},);
 
@@ -106,7 +107,7 @@ class TaskController extends GetxController {
       String token = loggedInUser!.token!;
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/tasks/tasks'),
+        Uri.parse('${Config.baseUrl}/api/tasks/tasks'),
         headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'},
@@ -136,7 +137,7 @@ class TaskController extends GetxController {
       String token = loggedInUser!.token!;
     try {
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/${task.id}'),
+        Uri.parse('${Config.baseUrl}/api/tasks/tasks/${task.id}'),
                 headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'},
@@ -164,7 +165,7 @@ class TaskController extends GetxController {
       String token = loggedInUser!.token!;
     try {
       final response = await http.delete(
-        Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/$id',),
+        Uri.parse('${Config.baseUrl}/api/tasks/tasks/$id',),
                 headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'},
@@ -195,7 +196,7 @@ class TaskController extends GetxController {
 
     // Ensure we have a logged-in user
       String token = loggedInUser!.token!;
-    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/tasks/tasks/$id')  ,    
+    final response = await http.get(Uri.parse('${Config.baseUrl}/api/tasks/tasks/$id')  ,    
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'},);

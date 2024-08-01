@@ -1,5 +1,6 @@
 import 'package:calendar/Models%20/survey_model.dart';
 import 'package:calendar/Models%20/user.dart';
+import 'package:calendar/core/config.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,7 +15,7 @@ class SurveyController {
       String token = loggedInUser!.token!;
       print(token);
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/api/surveys/surveys'),
+      Uri.parse('${Config.baseUrl}/api/surveys/surveys'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'},

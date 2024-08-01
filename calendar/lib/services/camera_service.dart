@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:calendar/Models%20/user.dart';
+import 'package:calendar/core/config.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -29,7 +30,7 @@ class CameraService {
     final bytes = await image.readAsBytes();
     final base64Image = 'data:image/${image.path.split('.').last};base64,' + base64Encode(bytes);
 
-    final uri = Uri.parse('http://10.0.2.2:3000/api/photo/upload');
+    final uri = Uri.parse('${Config.baseUrl}/api/photo/upload');
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json','Authorization': 'Bearer $token'},

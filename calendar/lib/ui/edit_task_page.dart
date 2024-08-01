@@ -12,6 +12,7 @@ import 'package:calendar/ui/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+//import 'package:calendar/controllers/flask_controller.dart';
 
 
 class EditTaskPage extends StatefulWidget {
@@ -53,6 +54,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
     _titleController = TextEditingController(text: widget.task.title);
     _noteController = TextEditingController(text: widget.task.note);
     _typeController = TextEditingController(text: widget.task.type);
+    // final FlaskController _flaskController = Get.put(FlaskController());
   }
 
   @override
@@ -246,6 +248,8 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 "Image uploaded successfully!",
                 snackPosition: SnackPosition.BOTTOM,
                 duration: Duration(seconds: 3),
+                // Call the Flask API after the image is successfully uploaded
+              // await _flaskController.callFlaskAPI( widget.task.id);
               );
               Future.delayed(Duration(seconds: 3), () {
                 Get.to(HomePage()); // Redirect to home page
