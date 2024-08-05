@@ -87,7 +87,7 @@ class _SurveyPageState extends State<SurveyPage> with SingleTickerProviderStateM
                       MyButton(
               label: "Skip",
               onTap: () {
-              Get.to(() => const HomePage());
+              Get.to(HomePage());
               
              }),
 

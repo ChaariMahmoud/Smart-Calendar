@@ -5,6 +5,7 @@ import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/controllers/task_controller.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/services/camera_service.dart';
+import 'package:calendar/ui/home_page.dart';
 import 'package:calendar/ui/theme.dart';
 import 'package:calendar/ui/widgets/button.dart';
 import 'package:calendar/ui/widgets/input_field.dart';
@@ -220,7 +221,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
       elevation: 10,
       leading: GestureDetector(
         onTap: () {
-          Get.back();
+          Get.to(HomePage());
         },
         child: const Icon(
           Icons.arrow_back_ios,
@@ -248,7 +249,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 // Call the Flask API after the image is successfully uploaded
               // await _flaskController.callFlaskAPI( widget.task.id);
               );
-             Get.back();
+            
               }else{
                  Get.snackbar(
                 "Error",
@@ -256,7 +257,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 snackPosition: SnackPosition.BOTTOM,
                 duration: Duration(seconds: 3),
               );
-               Get.back();
+              
               }
             }
           },
@@ -346,7 +347,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
   _validateData() {
     if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty && _typeController.text.isNotEmpty) {
       _updateTaskInDb();
-      Get.back();
+      Get.to(HomePage());
     } else {
       Get.snackbar(
         "Required",

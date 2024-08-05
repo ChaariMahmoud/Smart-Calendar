@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:calendar/controllers/user_controller.dart';
 import 'package:calendar/ui/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img;
 
 class ProfilePage extends StatelessWidget {
   final UserController userController = Get.put(UserController());
@@ -25,8 +27,10 @@ class ProfilePage extends StatelessWidget {
         ],
       ),
       body: Obx(() {
-        nameController.text = userController.user.value.name ?? '';
-        emailController.text = userController.user.value.email ?? '';
+        // Ensure user data is updated
+        final user = userController.user.value;
+        nameController.text = user.name ?? '';
+        emailController.text = user.email ?? '';
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -37,8 +41,8 @@ class ProfilePage extends StatelessWidget {
                 child: Center(
                   child: CircleAvatar(
                     radius: 50,
-                    backgroundImage: _getUserImage(userController.user.value.photo),
-                    child: userController.user.value.photo == null
+                    backgroundImage: _getUserImage(user.photo),
+                    child: user.photo == null || user.photo!.isEmpty
                         ? const Icon(Icons.add_a_photo, size: 50)
                         : null,
                   ),
@@ -126,10 +130,34 @@ class ProfilePage extends StatelessWidget {
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await picker.pickImage(source: source, preferredCameraDevice: CameraDevice.front);
+    final pickedFile = await picker.pickImage(
+      source: source,
+      preferredCameraDevice: CameraDevice.front,
+    );
+
     if (pickedFile != null) {
-      String base64Image = 'data:image/jpeg;base64,' + base64Encode(await pickedFile.readAsBytes());
+      // Read the image file
+      final imageBytes = await File(pickedFile.path).readAsBytes();
+
+      // Decode the image to be processed
+      img.Image? originalImage = img.decodeImage(imageBytes);
+
+      if (originalImage == null) {
+        print('Failed to decode image.');
+        return;
+      }
+
+      // Resize the image while maintaining the aspect ratio
+      img.Image resizedImage = img.copyResize(originalImage, width: 800);
+
+      // Encode the image to JPEG with high quality
+      List<int> compressedImageBytes = img.encodeJpg(resizedImage, quality: 75);
+      String base64Image = 'data:image/jpeg;base64,' + base64Encode(compressedImageBytes);
+
+      // Update user profile with the compressed image
       userController.updateUserProfile(photo: base64Image);
+    } else {
+      print('No image selected.');
     }
   }
 

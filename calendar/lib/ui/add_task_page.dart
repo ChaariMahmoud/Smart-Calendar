@@ -206,7 +206,7 @@ Row(
       elevation: 10,
       leading: GestureDetector(
         onTap: () {
-           Get.back();
+           Get.to(HomePage());
         },
         child: const Icon(
           Icons.arrow_back_ios,
@@ -230,19 +230,18 @@ Row(
                 "Success",
                 "Image uploaded successfully!",
                 snackPosition: SnackPosition.BOTTOM,
-                duration: Duration(seconds: 3),
+                duration: const Duration(seconds: 3),
               );
               // Call the Flask API after the image is successfully uploaded
               // await _flaskController.callFlaskAPI();
-             Get.back();
+           
               }else{
                  Get.snackbar(
                 "Error",
                 "Image upload failed!",
                 snackPosition: SnackPosition.BOTTOM,
-                duration: Duration(seconds: 3),
+                duration: const Duration(seconds: 3),
               );
-              Get.back();
               }
             }
           },
@@ -324,7 +323,7 @@ _colorPalette(){
 _validateData(){
   if(_titleController.text.isNotEmpty && _noteController.text.isNotEmpty && _typeController.text.isNotEmpty){
      _addtaskToDb();
-    Get.to(HomePage());
+    Get.to(const HomePage());
   }else if (_titleController.text.isEmpty || _noteController.text.isEmpty ||_typeController.text.isEmpty){
     Get.snackbar("Required", "All fields are required",
     snackPosition: SnackPosition.BOTTOM,

@@ -41,6 +41,7 @@ dependencies:
   connectivity_plus: ^6.0.4
   flutter_image_compress: ^2.3.0
   image: ^4.2.0
+  fluttertoast: ^8.2.6
   
 dev_dependencies:
   flutter_test:

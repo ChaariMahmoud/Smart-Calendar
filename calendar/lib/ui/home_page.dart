@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:calendar/Models%20/task.dart';
 import 'package:calendar/controllers/network_controller.dart';
 import 'package:calendar/controllers/task_controller.dart';
+import 'package:calendar/services/camera_service.dart';
 import 'package:calendar/services/notification_services.dart';
 import 'package:calendar/services/theme_service.dart';
 import 'package:calendar/ui/add_task_page.dart';
@@ -12,8 +15,10 @@ import 'package:calendar/ui/widgets/task_tile.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,6 +33,8 @@ class _HomePageState extends State<HomePage> {
   final TaskController _taskController = Get.put(TaskController());
   late NotifyHelper notifyHelper;
   final NetworkController _networkController = Get.put(NetworkController());
+   final cameraService = CameraService();
+     String calendarId =const Uuid().v4();
 
   @override
   void initState() {
@@ -50,13 +57,15 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             Obx(() {
+      // Check network status and show appropriate toast message
       if (!_networkController.isOnline.value) {
-        _showSnackBar(context, 'You are offline', Colors.red);
+        showToast('You are offline', backgroundColor: Colors.red);
       } else {
-        _showSnackBar(context, 'You are online', Colors.green);
+        showToast('You are online', backgroundColor: Colors.green);
       }
-      return const SizedBox.shrink(); // Return an empty widget as we use Snackbar
+      return const SizedBox.shrink(); // Return an empty widget as we use Toast
     }),
+
             _addTaskBar(),
             _addDateBar(),
             const SizedBox(height: 12),
@@ -65,7 +74,42 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+       floatingActionButton: FloatingActionButton(
+        onPressed: () async {File? image = await cameraService.getImage();
+            if (image != null) {
+              String? imageUrl = await cameraService.uploadImage(
+                image,
+                 calendarId, // This should be the actual taskId after the task is created
+                "calendar",
+              );
+             if (imageUrl != null) {
+                print("Image uploaded: $imageUrl");
+                
+                Get.snackbar(
+                "Success",
+                "Image uploaded successfully!",
+                snackPosition: SnackPosition.BOTTOM,
+                duration: Duration(seconds: 3),
+                // Call the Flask API after the image is successfully uploaded
+              // await _flaskController.callFlaskAPI( widget.task.id);
+              );
+            
+              }else{
+                 Get.snackbar(
+                "Error",
+                "Image upload failed!",
+                snackPosition: SnackPosition.BOTTOM,
+                duration: Duration(seconds: 3),
+              );
+              
+              }
+            }
+          },
+        backgroundColor: primaryClr,
+        child: const Icon(Icons.camera_alt, size: 30), // Camera icon
+      ),
     );
+    
   }
 
   AppBar _appBar() {
@@ -308,16 +352,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
-   void _showSnackBar(BuildContext context, String message, Color backgroundColor) {
-    Get.snackbar(
-      '',
-      message,
-      backgroundColor: backgroundColor,
-      colorText: Colors.white,
-      snackPosition: SnackPosition.TOP,
-      duration: const Duration(seconds: 3), // Show for 3 seconds
-      margin: const EdgeInsets.all(10),
-    );
-  }
+  // Function to show a toast message
+void showToast(String message, {Color backgroundColor = Colors.black}) {
+  Fluttertoast.showToast(
+    msg: message,
+    backgroundColor: backgroundColor,
+    textColor: Colors.white,
+    toastLength: Toast.LENGTH_SHORT,
+  );
+}
 }

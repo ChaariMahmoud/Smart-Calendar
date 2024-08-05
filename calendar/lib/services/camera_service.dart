@@ -38,8 +38,8 @@ class CameraService {
     // Resize the image while maintaining the aspect ratio
     img.Image resizedImage = img.copyResize(originalImage, width: 800);
 
-    // Encode the image to JPEG with high quality
-    List<int> compressedImageBytes = img.encodeJpg(resizedImage, quality: 85);
+    // Encode the image to JPEG with higher quality
+    List<int> compressedImageBytes = img.encodeJpg(resizedImage, quality: 75);
     String base64Image = 'data:image/jpeg;base64,' + base64Encode(compressedImageBytes);
 
     final uri = Uri.parse('${Config.baseUrl}/api/photo/upload');
@@ -59,6 +59,7 @@ class CameraService {
       return 'Image uploaded successfully.';
     } else {
       print('Image upload failed with status: ${response.statusCode}');
+      print('Response body: ${response.body}');
       return null;
     }
   }
