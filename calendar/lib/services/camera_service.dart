@@ -1,11 +1,10 @@
-// services/camera_service.dart
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/core/config.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img;
 import 'package:http/http.dart' as http;
 
 class CameraService {
@@ -22,21 +21,34 @@ class CameraService {
   }
 
   Future<String?> uploadImage(File image, String taskId, String action) async {
-         User? loggedInUser = await DBhelper.getLoggedInUser();
+    User? loggedInUser = await DBhelper.getLoggedInUser();
+    String token = loggedInUser!.token!;
+    String userId = loggedInUser.userId!;
 
-    // Ensure we have a logged-in user
-      String token = loggedInUser!.token!;
-      String userId = loggedInUser.userId!;
-    final bytes = await image.readAsBytes();
-    final base64Image = 'data:image/${image.path.split('.').last};base64,' + base64Encode(bytes);
+    // Read the image file
+    final imageBytes = await image.readAsBytes();
+    // Decode the image to be processed
+    img.Image? originalImage = img.decodeImage(imageBytes);
+
+    if (originalImage == null) {
+      print('Failed to decode image.');
+      return null;
+    }
+
+    // Resize the image while maintaining the aspect ratio
+    img.Image resizedImage = img.copyResize(originalImage, width: 800);
+
+    // Encode the image to JPEG with high quality
+    List<int> compressedImageBytes = img.encodeJpg(resizedImage, quality: 85);
+    String base64Image = 'data:image/jpeg;base64,' + base64Encode(compressedImageBytes);
 
     final uri = Uri.parse('${Config.baseUrl}/api/photo/upload');
     final response = await http.post(
       uri,
-      headers: {'Content-Type': 'application/json','Authorization': 'Bearer $token'},
+      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $token'},
       body: jsonEncode({
         'taskId': taskId,
-        'userId': userId, // Replace with actual user ID
+        'userId': userId,
         'action': action,
         'imageData': base64Image,
       }),

@@ -240,9 +240,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
               );
              if (imageUrl != null) {
                 print("Image uploaded: $imageUrl");
-                setState(() {
-                  // Optionally update state if you want to show the image or any other action
-                });
+                
                 Get.snackbar(
                 "Success",
                 "Image uploaded successfully!",
@@ -251,9 +249,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 // Call the Flask API after the image is successfully uploaded
               // await _flaskController.callFlaskAPI( widget.task.id);
               );
-              Future.delayed(Duration(seconds: 3), () {
-                Get.to(HomePage()); // Redirect to home page
-              });
+             Get.back();
               }else{
                  Get.snackbar(
                 "Error",
@@ -261,6 +257,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
                 snackPosition: SnackPosition.BOTTOM,
                 duration: Duration(seconds: 3),
               );
+               Get.back();
               }
             }
           },

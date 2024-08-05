@@ -226,9 +226,6 @@ Row(
               );
               if (imageUrl != null) {
                 print("Image uploaded: $imageUrl");
-                setState(() {
-                  // Optionally update state if you want to show the image or any other action
-                });
                 Get.snackbar(
                 "Success",
                 "Image uploaded successfully!",
@@ -236,10 +233,8 @@ Row(
                 duration: Duration(seconds: 3),
               );
               // Call the Flask API after the image is successfully uploaded
-              // await _flaskController.callFlaskAPI(taskId);
-              Future.delayed(Duration(seconds: 3), () {
-                Get.to(HomePage()); // Redirect to home page
-              });
+              // await _flaskController.callFlaskAPI();
+             Get.back();
               }else{
                  Get.snackbar(
                 "Error",
@@ -247,6 +242,7 @@ Row(
                 snackPosition: SnackPosition.BOTTOM,
                 duration: Duration(seconds: 3),
               );
+              Get.back();
               }
             }
           },
@@ -328,7 +324,7 @@ _colorPalette(){
 _validateData(){
   if(_titleController.text.isNotEmpty && _noteController.text.isNotEmpty && _typeController.text.isNotEmpty){
      _addtaskToDb();
-    Get.back();
+    Get.to(HomePage());
   }else if (_titleController.text.isEmpty || _noteController.text.isEmpty ||_typeController.text.isEmpty){
     Get.snackbar("Required", "All fields are required",
     snackPosition: SnackPosition.BOTTOM,
