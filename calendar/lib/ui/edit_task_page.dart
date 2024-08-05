@@ -5,7 +5,6 @@ import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/controllers/task_controller.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/services/camera_service.dart';
-import 'package:calendar/ui/home_page.dart';
 import 'package:calendar/ui/theme.dart';
 import 'package:calendar/ui/widgets/button.dart';
 import 'package:calendar/ui/widgets/input_field.dart';
