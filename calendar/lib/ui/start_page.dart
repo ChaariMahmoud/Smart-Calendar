@@ -38,7 +38,7 @@ class StartPage extends StatelessWidget {
                   child: SlideInUp(
                     duration: const Duration(seconds: 2),
                     child: Text(
-                      'Smart Calendar',
+                      'AI Calendar',
                       style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFF4e5ae8), // primaryClr

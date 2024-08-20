@@ -90,7 +90,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   ImageProvider _getUserImage(String? photo) {
-    if (photo == null || photo.isEmpty) {
+    if (photo == null ) {
       return const AssetImage('images/profile.png');
     } else if (photo.startsWith('data:image')) {
       return MemoryImage(base64Decode(photo.split(',').last));

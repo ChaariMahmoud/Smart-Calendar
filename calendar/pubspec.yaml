@@ -42,6 +42,9 @@ dependencies:
   flutter_image_compress: ^2.3.0
   image: ^4.2.0
   fluttertoast: ^8.2.6
+  flutter_image_editor: ^2.1.0
+  image_cropper: 7.1.0
+
   
 dev_dependencies:
   flutter_test:

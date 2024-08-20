@@ -4,6 +4,7 @@ import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/services/theme_service.dart';
 import 'package:calendar/ui/home_page.dart';
+import 'package:calendar/ui/profile._page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -368,12 +369,15 @@ class _SurveyPageState extends State<SurveyPage> with SingleTickerProviderStateM
           size: 25,
         ),
       ),
-      actions: const [
-        CircleAvatar(
-          backgroundImage: AssetImage("images/profile.png"),
-          maxRadius: 18,
+       actions:   [
+        GestureDetector(
+          onTap: (){
+            Get.to(ProfilePage());
+          },
+          child: const Icon(Icons.settings,size: 30,)
         ),
-        SizedBox(
+
+        const SizedBox(
           width: 20,
         )
       ],

@@ -10,10 +10,11 @@ const photoRoutes = require('./routes /photoRoute');
 const app = express();
 require('dotenv').config();
 const cors = require('cors');
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cors());
 
 // MongoDB connection
-mongoose.connect('mongodb://0.0.0.0:27017/smart_calendar')
+mongoose.connect('mongodb://127.0.0.1:27017/smart_calendar')
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
@@ -23,8 +24,8 @@ const authenticateToken = require('./middlewares/auth');
 const errorHandler = require('./middlewares/error');
 // Routes
 app.use('/api/users',authenticateToken, userRoutes);
-app.use('/api/tasks',authenticateToken, taskRoutes);
-app.use('/api/photo',authenticateToken, photoRoutes);
+app.use('/api/tasks', taskRoutes);
+app.use('/api/photo', photoRoutes);
 app.use('/api/surveys',authenticateToken, surveyRoutes);
 app.use('/api/auth', authRoutes);
 

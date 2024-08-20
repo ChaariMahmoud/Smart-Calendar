@@ -11,6 +11,7 @@ import 'package:calendar/ui/widgets/button.dart';
 import 'package:calendar/ui/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 //import 'package:calendar/controllers/flask_controller.dart';
 
@@ -231,7 +232,34 @@ class _EditTaskPageState extends State<EditTaskPage> {
      actions: [
         IconButton(
           icon: const Icon(Icons.camera_alt_outlined, size: 35),
-          onPressed: () async {File? image = await cameraService.getImage();
+            onPressed: () async {
+    final ImageSource? source = await showDialog<ImageSource>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Image Source'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera),
+                title: Text('Camera'),
+                onTap: () => Navigator.pop(context, ImageSource.camera),
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_album),
+                title: Text('Gallery'),
+                onTap: () => Navigator.pop(context, ImageSource.gallery),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (source != null) {
+      bool fromGallery = source == ImageSource.gallery;
+      File? image = await cameraService.getImage(fromGallery: fromGallery, context: context);
             if (image != null) {
               String? imageUrl = await cameraService.uploadImage(
                 image,
@@ -260,8 +288,8 @@ class _EditTaskPageState extends State<EditTaskPage> {
               
               }
             }
-          },
-        ),
+          }
+  }),
         const SizedBox(width: 20),
       ],
     );

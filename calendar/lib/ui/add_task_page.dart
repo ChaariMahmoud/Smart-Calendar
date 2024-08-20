@@ -13,6 +13,7 @@ import 'package:calendar/ui/widgets/button.dart';
 import 'package:calendar/ui/widgets/input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 //import 'package:calendar/controllers/flask_controller.dart';
@@ -200,24 +201,46 @@ Row(
 
   //Refactor
 
-  AppBar _appBar(BuildContext context) {
-    
-    return AppBar(
-      elevation: 10,
-      leading: GestureDetector(
-        onTap: () {
-           Get.to(HomePage());
-        },
-        child: const Icon(
-          Icons.arrow_back_ios,
-          size: 25,
-        ),
-      ),
-       actions: [
-        IconButton(
-          icon: const Icon(Icons.camera_alt_outlined, size: 35),
-          onPressed: () async {
-            File? image = await cameraService.getImage();
+AppBar _appBar(BuildContext context) {
+  return AppBar(
+    elevation: 10,
+    leading: IconButton(
+      icon: const Icon(Icons.arrow_back_ios, size: 25),
+      onPressed: () {
+        Get.to(HomePage());
+      },
+    ),
+    actions: [
+      IconButton(
+        icon: const Icon(Icons.camera_alt_outlined, size: 35),
+        onPressed: () async {
+          final ImageSource? source = await showDialog<ImageSource>(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Select Image Source'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.camera),
+                      title: const Text('Camera'),
+                      onTap: () => Navigator.pop(context, ImageSource.camera),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.photo_album),
+                      title: const Text('Gallery'),
+                      onTap: () => Navigator.pop(context, ImageSource.gallery),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+
+          if (source != null) {
+            bool fromGallery = source == ImageSource.gallery;
+            File? image = await cameraService.getImage(fromGallery: fromGallery, context: context);
             if (image != null) {
               String? imageUrl = await cameraService.uploadImage(
                 image,
@@ -227,29 +250,28 @@ Row(
               if (imageUrl != null) {
                 print("Image uploaded: $imageUrl");
                 Get.snackbar(
-                "Success",
-                "Image uploaded successfully!",
-                snackPosition: SnackPosition.BOTTOM,
-                duration: const Duration(seconds: 3),
-              );
-              // Call the Flask API after the image is successfully uploaded
-              // await _flaskController.callFlaskAPI();
-           
-              }else{
-                 Get.snackbar(
-                "Error",
-                "Image upload failed!",
-                snackPosition: SnackPosition.BOTTOM,
-                duration: const Duration(seconds: 3),
-              );
+                  "Success",
+                  "Image uploaded successfully!",
+                  snackPosition: SnackPosition.BOTTOM,
+                  duration: const Duration(seconds: 3),
+                );
+              } else {
+                Get.snackbar(
+                  "Error",
+                  "Image upload failed!",
+                  snackPosition: SnackPosition.BOTTOM,
+                  duration: const Duration(seconds: 3),
+                );
               }
             }
-          },
-        ),
-        const SizedBox(width: 20),
-      ],
-    );
-  }
+          }
+        },
+      ),
+      const SizedBox(width: 20),
+    ],
+  );
+}
+
 
   _getDateFromUser() async {
 

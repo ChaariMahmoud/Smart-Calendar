@@ -1,5 +1,5 @@
-import 'dart:io';
 
+import 'dart:io';
 import 'package:calendar/Models%20/task.dart';
 import 'package:calendar/controllers/network_controller.dart';
 import 'package:calendar/controllers/task_controller.dart';
@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
@@ -34,7 +35,7 @@ class _HomePageState extends State<HomePage> {
   late NotifyHelper notifyHelper;
   final NetworkController _networkController = Get.put(NetworkController());
    final cameraService = CameraService();
-     String calendarId =const Uuid().v4();
+     String calendarId = Uuid().v4();
 
   @override
   void initState() {
@@ -75,16 +76,42 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
        floatingActionButton: FloatingActionButton(
-        onPressed: () async {File? image = await cameraService.getImage();
+          onPressed: () async {
+    final ImageSource? source = await showDialog<ImageSource>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Image Source'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera),
+                title: Text('Camera'),
+                onTap: () => Navigator.pop(context, ImageSource.camera),
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_album),
+                title: Text('Gallery'),
+                onTap: () => Navigator.pop(context, ImageSource.gallery),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (source != null) {
+      bool fromGallery = source == ImageSource.gallery;
+      File? image = await cameraService.getImage(fromGallery: fromGallery , context: context);
             if (image != null) {
               String? imageUrl = await cameraService.uploadImage(
                 image,
-                 calendarId, // This should be the actual taskId after the task is created
+                 calendarId, // This should be the actual calendarId after the calendar is created
                 "calendar",
               );
              if (imageUrl != null) {
                 print("Image uploaded: $imageUrl");
-                
                 Get.snackbar(
                 "Success",
                 "Image uploaded successfully!",
@@ -104,7 +131,7 @@ class _HomePageState extends State<HomePage> {
               
               }
             }
-          },
+          }},
         backgroundColor: primaryClr,
         child: const Icon(Icons.camera_alt, size: 30), // Camera icon
       ),
