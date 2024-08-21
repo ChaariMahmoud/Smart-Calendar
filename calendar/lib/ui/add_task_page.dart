@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:calendar/Models%20/task.dart';
 import 'package:calendar/Models%20/user.dart';
+import 'package:calendar/controllers/add_task_controller.dart';
+import 'package:calendar/controllers/flask_ml_controller.dart';
 import 'package:calendar/controllers/task_controller.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/services/camera_service.dart';
@@ -48,7 +50,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
     final TextEditingController _noteController = TextEditingController() ;
     final TextEditingController _typeController = TextEditingController() ;
     final TaskController _taskController = Get.put(TaskController());
-   // final FlaskController _flaskController = Get.put(FlaskController());
+    final FlaskMlController _flaskController = Get.put(FlaskMlController());
+    //bool _autoSelectTime = false ;
+    final AddTaskController _addTaskController = Get.put(AddTaskController());
+    DateTime _startSelectedDate = DateTime.now() ;
+    DateTime _endSelectedDate = DateTime.now() ;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,46 +73,101 @@ class _AddTaskPageState extends State<AddTaskPage> {
                MyInputField(title: "Title",hint: "Enter title here",controller: _titleController,),
                MyInputField(title: "Note",hint: "Enter note here",controller: _noteController,),
                MyInputField(title: "Type",hint: "Enter type here",controller: _typeController,),
-               MyInputField(title: "Date",
-               hint: DateFormat.yMMMMd().format(_selectedDate),
-               widget: IconButton(
-                     icon: const Icon(Icons.calendar_today_outlined),
-                    onPressed: () {
-                      _getDateFromUser();
+              Obx(() => SwitchListTile(
+                    title: Text(
+                      "Auto Select Time with AI",
+                      style: titleStyle,
+                    ),
+                    value: _addTaskController.autoSelectTime.value,
+                    onChanged: (bool value) {
+                      _addTaskController.toggleAutoSelectTime();
                     },
-              ),),
-               Row(
-                children: [
-                 Expanded(child: MyInputField(
-                          title: "Start Time",
-                          hint: _startTime,
-                          widget: IconButton(
-                          icon: const Icon(Icons.access_time_rounded),
+                    activeColor: primaryClr,
+                  )),
+              // Conditionally show the date and time input fields
+              Obx(() {
+                if (!_addTaskController.autoSelectTime.value) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      MyInputField(
+                        title: "Date",
+                        hint: DateFormat.yMMMMd().format(_selectedDate),
+                        widget: IconButton(
+                          icon: const Icon(Icons.calendar_today_outlined),
                           onPressed: () {
-                            _getTimeFromUser(isStartTime: true);
+                            _getDateFromUser(dateType: 'selected');
                           },
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: MyInputField(
+                              title: "Start Time",
+                              hint: _startTime,
+                              widget: IconButton(
+                                icon: const Icon(Icons.access_time_rounded),
+                                onPressed: () {
+                                  _getTimeFromUser(isStartTime: true);
+                                },
+                              ),
                             ),
-                          ),) ,
-                          const SizedBox(width: 10,),
-                      Expanded(child: 
-                  MyInputField(
-                          title: "End Time",
-                          hint: _endTime,
-                          widget: IconButton(
-                          icon: const Icon(Icons.access_time_rounded),
-                          onPressed: () {
-                            _getTimeFromUser(isStartTime: false);
-                          },
-          ),
-        ),
-                  
-                  ),
-
-
-                 
-                ],
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: MyInputField(
+                              title: "End Time",
+                              hint: _endTime,
+                              widget: IconButton(
+                                icon: const Icon(Icons.access_time_rounded),
+                                onPressed: () {
+                                  _getTimeFromUser(isStartTime: false);
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                } else {
+                      return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: MyInputField(
+                title: "From",
+                hint: DateFormat.yMMMMd().format(_startSelectedDate),
+                widget: IconButton(
+                  icon: const Icon(Icons.calendar_today_outlined),
+                  onPressed: () {
+                    _getDateFromUser(dateType: 'start');
+                  },
+                ),
               ),
-
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: MyInputField(
+                title: "To",
+                hint: DateFormat.yMMMMd().format(_endSelectedDate),
+                widget: IconButton(
+                  icon: const Icon(Icons.calendar_today_outlined),
+                  onPressed: () {
+                    _getDateFromUser(dateType: 'end');
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+                }
+              }),
               Container(
                 margin: const EdgeInsets.only(top: 15),
                 child: Column(
@@ -273,20 +334,27 @@ AppBar _appBar(BuildContext context) {
 }
 
 
-  _getDateFromUser() async {
+_getDateFromUser({required String dateType}) async {
+  DateTime? pickerDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2020),
+    lastDate: DateTime(2100),
+  );
 
-    DateTime? pickerDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2100));
-
-      if (pickerDate!=null){
-        setState(() {
-          _selectedDate =pickerDate ;
-        });
+  if (pickerDate != null) {
+    setState(() {
+      if (dateType == 'selected') {
+        _selectedDate = pickerDate;
+      } else if (dateType == 'start') {
+        _startSelectedDate = pickerDate;
+      } else if (dateType == 'end') {
+        _endSelectedDate = pickerDate;
       }
+    });
   }
+}
+
 
 _getTimeFromUser({required bool isStartTime}) async {
   var pickedTime = await _showTimePicker();
@@ -342,17 +410,34 @@ _colorPalette(){
 }
 
 
-_validateData(){
-  if(_titleController.text.isNotEmpty && _noteController.text.isNotEmpty && _typeController.text.isNotEmpty){
-     _addtaskToDb();
-    Get.to(const HomePage());
-  }else if (_titleController.text.isEmpty || _noteController.text.isEmpty ||_typeController.text.isEmpty){
-    Get.snackbar("Required", "All fields are required",
-    snackPosition: SnackPosition.BOTTOM,
-    backgroundColor: Colors.white,colorText: pinkClr,
-    icon: const Icon(Icons.warning_amber_rounded,color: Colors.red,));
+  _validateData() {
+    if (_titleController.text.isNotEmpty &&
+        _noteController.text.isNotEmpty &&
+        _typeController.text.isNotEmpty) {
+      if (_addTaskController.autoSelectTime.value) {
+        _sendTaskToFlask();
+        Get.to(const HomePage());
+      } else {
+        _addtaskToDb();
+        Get.to(const HomePage());
+      }
+    } else if (_titleController.text.isEmpty ||
+        _noteController.text.isEmpty ||
+        _typeController.text.isEmpty) {
+      Get.snackbar(
+        "Required",
+        "All fields are required",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.white,
+        colorText: pinkClr,
+        icon: const Icon(
+          Icons.warning_amber_rounded,
+          color: Colors.red,
+        ),
+      );
+    }
   }
-}
+
 
 _addtaskToDb() async {
   
@@ -401,5 +486,27 @@ _addtaskToDb() async {
   await _taskController.synchronizeTasks();
 }
 
+  _sendTaskToFlask() async {
+    User? loggedInUser = await DBhelper.getLoggedInUser();
+    String userId = loggedInUser!.userId!;
+
+    Task task = Task(
+      id: taskId,
+      title: _titleController.text,
+      note: _noteController.text,
+      type: _typeController.text,
+      date: "${DateFormat.yMd().format(_startSelectedDate)}  +  ${DateFormat.yMd().format(_endSelectedDate)}",
+      beginTime: _startTime,
+      endTime: _endTime,
+      successPercentage: 0.0,
+      difficulty: _selectedDifficulty,
+      priority: _selectedPriority,
+      userId: userId,
+      color: _selectedColor,
+    );
+
+    print("Sending task to Flask API: ${task.toJson()}");
+    await _flaskController.autoSelectTimeAndAddTask(task);
+  }
 
 }

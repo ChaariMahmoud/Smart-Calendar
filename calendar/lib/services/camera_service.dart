@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:calendar/Models%20/user.dart';
-import 'package:calendar/controllers/flask_controller.dart';
+import 'package:calendar/controllers/flask_ocr_controller.dart';
 import 'package:calendar/core/config.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 
 class CameraService {
   final picker = ImagePicker();
-  final FlaskController flaskController = FlaskController();
+  final FlaskOcrController flaskController = FlaskOcrController();
 
   Future<File?> getImage({bool fromGallery = false, BuildContext? context}) async {
     final pickedFile = fromGallery

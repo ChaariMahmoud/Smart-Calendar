@@ -42,7 +42,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _taskController.getTasks();
     _taskController.synchronizeTasks();
-    //_taskController.deleteLocalPreviousDayTasks();
     notifyHelper = NotifyHelper();
     notifyHelper.initializeNotification();
     notifyHelper.requestIOSPermissions();
@@ -221,8 +220,11 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 _selectedDate = date;
               });
+              
             },
+             
           );
+          
         },
       ),
     );
