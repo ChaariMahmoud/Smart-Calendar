@@ -24,9 +24,10 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Smart Calendar',
-      
+    
       
       theme: Themes.light,
+      
       darkTheme: Themes.dark,
       themeMode: ThemeService().theme,
       

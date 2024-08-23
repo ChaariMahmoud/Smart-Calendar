@@ -1,10 +1,12 @@
 import 'package:calendar/Models%20/task.dart';
+import 'package:calendar/controllers/task_controller.dart';
 import 'package:calendar/core/config.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class FlaskMlController extends GetxController {
+   final TaskController _taskController = Get.put(TaskController());
 
   Future<void> autoSelectTimeAndAddTask(Task task) async {
     try {
@@ -18,6 +20,7 @@ class FlaskMlController extends GetxController {
 
       if (response.statusCode == 200) {
         jsonDecode(response.body);
+        _taskController.synchronizeTasks();
         // Process the response if necessary
         print('Task added successfully with AI selected time.');
         Get.snackbar(

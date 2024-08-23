@@ -1,5 +1,7 @@
 import 'package:calendar/ui/login_page.dart';
+import 'package:calendar/ui/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Add this import for SVG support
 import 'package:get/get.dart';
 import 'package:animate_do/animate_do.dart';
 
@@ -18,39 +20,53 @@ class StartPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // App Logo with animation
+                // Top Row with App Title and Logo
                 FadeInUp(
                   duration: const Duration(seconds: 2),
-                  child: BounceInDown(
-                    duration: const Duration(seconds: 2),
-                    child: Container(
-                      width: isWideScreen ? 200 : 150,
-                      height: isWideScreen ? 200 : 150,
-                      child: Image.asset('images/logo.png'), // Use your image here
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // App Title with animation
-                FadeInUp(
-                  duration: const Duration(seconds: 2),
-                  child: SlideInUp(
-                    duration: const Duration(seconds: 2),
-                    child: Text(
-                      'AI Calendar',
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF4e5ae8), // primaryClr
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // App Title with animation
+                      SlideInLeft(
+                        duration: const Duration(seconds: 2),
+                        
+                        child: Text(
+                          '  AI  \nCalendar',
+                          textAlign:
+                              TextAlign.right, // Align text to the right side
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineLarge
+                              ?.copyWith(
+                                fontWeight: FontWeight.w300,
+                                color: white, // primaryClr
+                              ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 20), // Space between text and logo
+
+                      
+
+                      // App Logo with animation
+                      BounceInRight(
+                        duration: const Duration(seconds: 2),
+                        child: SvgPicture.asset(
+                          'images/orange-logo.svg', // Use your SVG file here
+                          width: isWideScreen ? 120 : 75,
+                          height: isWideScreen ? 120 : 75,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(
+                    height: 20), // Space between top row and description
 
                 // Description with animation
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 15.0),
                   child: FadeInUp(
                     duration: const Duration(seconds: 2),
                     child: SlideInUp(
@@ -59,15 +75,16 @@ class StartPage extends StatelessWidget {
                         'Transform your daily routine with Smart Calendar: Capture task photos, receive intelligent timing suggestions, and seamlessly manage your productivity with our intuitive app.',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontSize: isWideScreen ? 18 : 16,
-                          color: Colors.white.withOpacity(0.9),
-                          fontWeight: FontWeight.w400,
-                        ),
+                              fontSize: isWideScreen ? 18 : 16,
+                              color: Colors.white.withOpacity(0.9),
+                              fontWeight: FontWeight.w400,
+                            ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(
+                    height: 30), // Space between description and button
 
                 // Get Started Button with animation
                 AnimatedSize(
@@ -79,14 +96,15 @@ class StartPage extends StatelessWidget {
                         padding: EdgeInsets.symmetric(
                           vertical: isWideScreen ? 20 : 15,
                           horizontal: isWideScreen ? 40 : 30,
-                        ), backgroundColor: const Color(0xFF4e5ae8), // primaryClr
+                        ),
+                        backgroundColor: primaryClr, // primaryClr
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         elevation: 8,
                       ),
                       onPressed: () {
-                        Get.to(LoginPage());  
+                        Get.to(LoginPage());
                       },
                       child: const Text(
                         'Get Started',

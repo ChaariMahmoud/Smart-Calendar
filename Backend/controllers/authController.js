@@ -61,7 +61,7 @@ const loginUser = async (req, res) => {
     user.jwtToken = token;
     await user.save();
 
-    res.status(200).json({userId: user._id, name: user.name, email: user.email, token});
+    res.status(200).json({userId: user._id, name: user.name, email: user.email, token ,photo :user.photo});
   } catch (error) {
     console.error('Error during user login:', error);  // Log the error for debugging
     res.status(500).json({ error: 'An error occurred while logging in. Please try again.' });

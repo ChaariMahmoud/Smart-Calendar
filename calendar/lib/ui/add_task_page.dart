@@ -397,7 +397,7 @@ _colorPalette(){
               },
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: CircleAvatar(radius: 15,backgroundColor: index==0?primaryClr:index==1?pinkClr:yellowClr,
+                child: CircleAvatar(radius: 15,backgroundColor: index==0?bluishClr:index==1?pinkClr:yellowClr,
                 child: _selectedColor ==index ?const Icon(Icons.done,color: Colors.white,size: 15,):Container()),
               ),
             );
