@@ -95,9 +95,11 @@ class TaskController extends GetxController {
   }
 
   Future<void> synchronizeTasks() async {
-    await fetchTasksFromBackend();
     await pushLocalTasksToBackend();
-    getTasks(); // Refresh the local task list
+    await fetchTasksFromBackend();
+    
+     // Refresh the local task list
+     //getTasks();
   }
 
   Future<void> pushTaskToBackend(Task task) async {
@@ -158,32 +160,45 @@ class TaskController extends GetxController {
     }
   }
 
-  Future<void> deleteTaskFromBackend(String id) async {
-         User? loggedInUser = await DBhelper.getLoggedInUser();
+  Future<void> deleteTaskFromBackend(Task task) async {
+  // Retrieve the logged-in user and their token
+  User? loggedInUser = await DBhelper.getLoggedInUser();
+  String token = loggedInUser!.token!;
 
-    // Ensure we have a logged-in user
-      String token = loggedInUser!.token!;
-    try {
-      final response = await http.delete(
-        Uri.parse('${Config.baseUrl}/api/tasks/tasks/$id',),
-                headers: {
+  try {
+    // Make the DELETE request to the backend
+    final response = await http.delete(
+      Uri.parse('${Config.baseUrl}/api/tasks/tasks/${task.id}'),
+      headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token'},
-      );
+        'Authorization': 'Bearer $token',
+      },
+    );
 
-      print('DELETE request URL: ${response.request!.url}');
-      print('DELETE request headers: ${response.request!.headers}');
-      print('DELETE response status code: ${response.statusCode}');
-      print('DELETE response body: ${response.body}');
+    print('DELETE request URL: ${response.request!.url}');
+    print('DELETE request headers: ${response.request!.headers}');
+    print('DELETE response status code: ${response.statusCode}');
+    print('DELETE response body: ${response.body}');
 
-      if (response.statusCode != 200) {
-        throw Exception('Failed to delete task from backend: ${response.body}');
-      }
-    } catch (e) {
-      print('Exception during DELETE request: $e');
-      rethrow; 
+    // Check if the deletion was successful
+    if (response.statusCode == 200) {
+      // If successful, delete the task from the local database
+      await DBhelper.delete(task);
+      print('Task successfully deleted from backend and local database');
+    } else {
+      // If unsuccessful, throw an exception with the response body
+      throw Exception('Failed to delete task from backend: ${response.body}');
     }
+  } catch (e) {
+    print('Exception during DELETE request: $e');
+    // Handle any exceptions during the DELETE request
+    rethrow; // Re-throw the exception if needed for further handling
+  } finally {
+    // Synchronize tasks by fetching the updated list
+    getTasks();
   }
+}
+
 
   Future<bool> _taskExistsInLocalDb(String? id) async {
     if (id == null) return false;
