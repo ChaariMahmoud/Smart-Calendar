@@ -8,19 +8,22 @@ class MyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark ;
     return GestureDetector(
       onTap:onTap,
       child:Container(
         width: 100,
         height: 50,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),color: primaryClr),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20),
+        //color: primaryClr ,
+         border:Border.all(color : primaryClr)),
         
         child:
         Center(
           child: Text(
             label,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color:isDark ?Colors.white : Colors.black,
             ),
           ),
         ),

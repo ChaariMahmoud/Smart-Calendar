@@ -1,4 +1,5 @@
-import 'package:calendar/Models%20/task.dart';
+
+import 'package:calendar/Models%20/task_for_flask.dart';
 import 'package:calendar/controllers/task_controller.dart';
 import 'package:calendar/core/config.dart';
 import 'package:get/get.dart';
@@ -8,7 +9,7 @@ import 'dart:convert';
 class FlaskMlController extends GetxController {
    final TaskController _taskController = Get.put(TaskController());
 
-  Future<void> autoSelectTimeAndAddTask(Task task) async {
+  Future<void> autoSelectTimeAndAddTask(TaskFlask task) async {
     try {
       final response = await http.post(
         Uri.parse('${Config.flaskUrl}:5000/auto_select_time'),

@@ -1,8 +1,9 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers, use_build_context_synchronously, avoid_print
+// ignore_for_file: no_leading_underscores_for_local_identifiers, use_build_context_synchronously, avoid_print, non_constant_identifier_names
 
 import 'dart:io';
 
 import 'package:calendar/Models%20/task.dart';
+import 'package:calendar/Models%20/task_for_flask.dart';
 import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/controllers/add_task_controller.dart';
 import 'package:calendar/controllers/flask_ml_controller.dart';
@@ -42,6 +43,17 @@ class _AddTaskPageState extends State<AddTaskPage> {
     4,
     5
    ];
+
+   //String _selectedTimeOfDay = "Morning" ;
+   List<String> TimeOfDayList =[
+    "Morning",
+    "Afternoon",
+    "Evening",
+    "Night",
+   ];
+
+
+
    int _selectedColor=0;
    //double _successPercentage = 50.0;
     int _selectedPriority = 1;
@@ -55,6 +67,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
     final AddTaskController _addTaskController = Get.put(AddTaskController());
     DateTime _startSelectedDate = DateTime.now() ;
     DateTime _endSelectedDate = DateTime.now() ;
+      List<bool> _preferredTimesSelected = List.generate(4, (index) => false);
+  List<String> _preferredTimesOptions = ["Morning", "Afternoon", "Evening", "Night"];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,33 +149,40 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Column(
           children: [
-            Expanded(
-              child: MyInputField(
-                title: "From",
-                hint: DateFormat.yMMMMd().format(_startSelectedDate),
-                widget: IconButton(
-                  icon: const Icon(Icons.calendar_today_outlined),
-                  onPressed: () {
-                    _getDateFromUser(dateType: 'start');
-                  },
+            Row(
+              children: [
+                Expanded(
+                  child: MyInputField(
+                    title: "From",
+                    hint: DateFormat.yMMMMd().format(_startSelectedDate),
+                    widget: IconButton(
+                      icon: const Icon(Icons.calendar_today_outlined),
+                      onPressed: () {
+                        _getDateFromUser(dateType: 'start');
+                      },
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: MyInputField(
-                title: "To",
-                hint: DateFormat.yMMMMd().format(_endSelectedDate),
-                widget: IconButton(
-                  icon: const Icon(Icons.calendar_today_outlined),
-                  onPressed: () {
-                    _getDateFromUser(dateType: 'end');
-                  },
+                const SizedBox(width: 10),
+                Expanded(
+                  child: MyInputField(
+                    title: "To",
+                    hint: DateFormat.yMMMMd().format(_endSelectedDate),
+                    widget: IconButton(
+                      icon: const Icon(Icons.calendar_today_outlined),
+                      onPressed: () {
+                        _getDateFromUser(dateType: 'end');
+                      },
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
+            SizedBox(height: 12,),
+            _buildPreferredTimes()
+             
           ],
         ),
       ],
@@ -490,7 +511,7 @@ _addtaskToDb() async {
     User? loggedInUser = await DBhelper.getLoggedInUser();
     String userId = loggedInUser!.userId!;
 
-    Task task = Task(
+    TaskFlask task = TaskFlask(
       id: taskId,
       title: _titleController.text,
       note: _noteController.text,
@@ -503,10 +524,45 @@ _addtaskToDb() async {
       priority: _selectedPriority,
       userId: userId,
       color: _selectedColor,
+      
+      preferredTimes: _preferredTimesOptions
+            .asMap()
+            .entries
+            .where((entry) => _preferredTimesSelected[entry.key])
+            .map((entry) => entry.value)
+            .toList(),
     );
 
     print("Sending task to Flask API: ${task.toJson()}");
     await _flaskController.autoSelectTimeAndAddTask(task);
+  }
+
+
+   Widget _buildPreferredTimes() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text("Preferred Time", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+        Column(
+          children: _preferredTimesOptions
+              .asMap()
+              .entries
+              .map((entry) => SizedBox(
+                    width: double.infinity,
+                    child: CheckboxListTile(
+                      title: Text(entry.value),
+                      value: _preferredTimesSelected[entry.key],
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _preferredTimesSelected[entry.key] = value ?? false;
+                        });
+                      },
+                    ),
+                  ))
+              .toList(),
+        ),
+      ],
+    );
   }
 
 }

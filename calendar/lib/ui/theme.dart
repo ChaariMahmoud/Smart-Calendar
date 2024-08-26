@@ -6,7 +6,7 @@ const Color bluishClr = Color(0xFF4bb4e6);
 const Color yellowClr = Color(0xFFFFD200);
 const Color pinkClr = Color(0xFFCD3C14);
 const Color white = Colors.white;
-const Color primaryClr = Color(0xFFf16e00);
+const Color primaryClr = Color(0xFFff7900);
 const Color darkGreyClr = Colors.black;
 const Color darkHeaderClr = Color(0xFFEEEFFF);
 
@@ -14,8 +14,8 @@ class Themes {
   static final light = ThemeData(
     primaryColor: primaryClr,
     brightness: Brightness.light,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: primaryClr,
+    appBarTheme: AppBarTheme(
+     // backgroundColor: primaryClr,
     ),
     colorScheme: ColorScheme.light(
       primary: primaryClr,
@@ -50,7 +50,7 @@ class Themes {
     primaryColor: darkGreyClr,
     brightness: Brightness.dark,
     appBarTheme: const AppBarTheme(
-      backgroundColor: primaryClr,
+     // backgroundColor: primaryClr,
     ),
     colorScheme: ColorScheme.dark(
       primary: primaryClr,
@@ -68,6 +68,7 @@ class Themes {
       activeTrackColor: primaryClr,
       thumbColor: primaryClr,
       overlayColor: primaryClr.withOpacity(0.2),
+
     ),
     switchTheme: SwitchThemeData(
       thumbColor: MaterialStateProperty.all(primaryClr),

@@ -357,9 +357,9 @@ class _HomePageState extends State<HomePage> {
         height: 55,
         width: MediaQuery.of(context).size.width * 0.9,
         decoration: BoxDecoration(
-          color: isClosed == true ? Colors.transparent : clr,
+         // color: isClosed == true ? Colors.transparent : clr,
           border: Border.all(
-            width: 2,
+            width: 3,
             color: isClosed == true
                 ? Get.isDarkMode
                     ? Colors.grey[600]!
@@ -371,9 +371,9 @@ class _HomePageState extends State<HomePage> {
         child: Center(
           child: Text(
             label,
-            style: isClosed
+           /* style: isClosed
                 ? titleStyle
-                : titleStyle.copyWith(color: Colors.white),
+                : titleStyle.copyWith(color: Colors.white),*/
           ),
         ),
       ),

@@ -16,8 +16,9 @@ class TaskTile extends StatefulWidget {
 
 class _TaskTileState extends State<TaskTile> {
    double _successPercentage = 0.0;
+   
   final TaskController _taskController = TaskController();
-
+ 
   @override
   void initState() {
     super.initState();
@@ -53,6 +54,8 @@ class _TaskTileState extends State<TaskTile> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark ;
+     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       width: MediaQuery.of(context).size.width,
@@ -61,7 +64,8 @@ class _TaskTileState extends State<TaskTile> {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: _getBGClr(widget.task?.color ?? 0),
+          border:  Border.all(color :_getBGClr(widget.task?.color ?? 0)),
+         // color: _getBGClr(widget.task?.color ?? 0),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,10 +73,10 @@ class _TaskTileState extends State<TaskTile> {
             Text(
               widget.task?.title ?? "",
               style: GoogleFonts.lato(
-                textStyle: const TextStyle(
+                textStyle:  TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: isDark? Colors.white : Colors.black
                 ),
               ),
             ),
@@ -82,14 +86,14 @@ class _TaskTileState extends State<TaskTile> {
               children: [
                 Icon(
                   Icons.access_time_rounded,
-                  color: Colors.grey[200],
+                  color: isDark? Colors.white : Colors.black,
                   size: 18,
                 ),
                 const SizedBox(width: 5),
                 Text(
                   "${widget.task!.beginTime} - ${widget.task!.endTime}",
                   style: GoogleFonts.lato(
-                    textStyle: TextStyle(fontSize: 13, color: Colors.grey[100]),
+                    textStyle: TextStyle(fontSize: 13, color: isDark? Colors.white : Colors.black),
                   ),
                 ),
               ],
@@ -98,7 +102,7 @@ class _TaskTileState extends State<TaskTile> {
             Text(
               "note  :   ${widget.task?.note ?? ""}",
               style: GoogleFonts.lato(
-                textStyle: TextStyle(fontSize: 15, color: Colors.grey[100]),
+                textStyle: TextStyle(fontSize: 15, color: isDark? Colors.white : Colors.black),
               ),
             ),
             const SizedBox(height: 12),
@@ -107,7 +111,7 @@ class _TaskTileState extends State<TaskTile> {
               style: GoogleFonts.lato(
                 textStyle: TextStyle(
                   fontSize: 15,
-                  color: Colors.grey[100],
+                  color: isDark? Colors.white : Colors.black,
                 ),
               ),
             ),
@@ -127,10 +131,10 @@ class _TaskTileState extends State<TaskTile> {
                   child: Text(
                     _successPercentage == 100 ? "COMPLETED" : "TODO",
                     style: GoogleFonts.lato(
-                      textStyle: const TextStyle(
+                      textStyle: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: isDark? Colors.white : Colors.black,
                       ),
                     ),
                   ),
@@ -138,10 +142,10 @@ class _TaskTileState extends State<TaskTile> {
                 Text(
                   "${_successPercentage.round()}%",
                   style: GoogleFonts.lato(
-                    textStyle: const TextStyle(
+                    textStyle:  TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: isDark? Colors.white : Colors.black,
                     ),
                   ),
                 ),
