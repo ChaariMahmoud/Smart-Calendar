@@ -205,6 +205,6 @@ class ProfilePage extends StatelessWidget {
 
   void _logout() {
     userController.logoutUser();
-    Get.to(LoginPage()); // Redirect to login page
+    Get.offAll(LoginPage()); // Redirect to login page
   }
 }
