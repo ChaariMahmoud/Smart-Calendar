@@ -26,7 +26,7 @@ dependencies:
   uuid: ^4.4.2
   image_picker: ^0.8.4+4
   l: ^4.0.2
-  local_auth: ^2.2.0
+  local_auth: ^2.3.0
   animate_do: ^3.3.4
   flare_flutter: ^3.0.2
   path_provider: ^2.1.4
@@ -38,6 +38,7 @@ dependencies:
   image_cropper: 7.1.0
   flutter_svg: ^2.0.10+1
   flutter_launcher_icons: ^0.13.1
+  shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_test:

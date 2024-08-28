@@ -4,6 +4,7 @@ import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/core/config.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:convert';
 import '../db/db_helper.dart';
@@ -165,10 +166,18 @@ class UserController extends GetxController {
   Future<void> logoutUser() async {
     print('Attempting to log out user with ID: ${user.value.userId}');
     try {
+      // Clear SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('staySignedIn');
+      await prefs.remove('userEmail');
+      await prefs.remove('userPassword');
+      await prefs.clear();
       // Remove user from local database
       await DBhelper.deleteAllTasks();
       await DBhelper.deleteUser(user.value.userId!);
       user.value = User(userId: '', name: '', email: '', token: '',photo: '');
+
+       
       print('User logged out successfully');
     } catch (e) {
       print('Error during logout: $e');
