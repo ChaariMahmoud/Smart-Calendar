@@ -1,5 +1,6 @@
 
 import 'package:calendar/controllers/user_controller.dart';
+import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/ui/send_otp.dart';
 import 'package:calendar/ui/register_page.dart';
 import 'package:calendar/ui/start_page.dart';
@@ -27,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _checkStaySignedIn();
-   // _checkBiometrics();
+   
   }
 
   Future<void> _checkStaySignedIn() async {
@@ -43,6 +44,10 @@ class _LoginPageState extends State<LoginPage> {
         await userController.loginUser(email, password);
         Get.to(const SurveyPage());
       }
+    }else{
+      //Ensure all previous user data are wiped even if the user accidentally closes the app without logout (force close)
+       DBhelper.deleteAllTasks();
+      
     }
   }
 

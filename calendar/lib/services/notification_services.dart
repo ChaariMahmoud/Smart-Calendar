@@ -55,9 +55,9 @@ class NotifyHelper {
 
   Future<void> createNotificationChannel() async {
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
-      'your_channel_id', // id
-      'your_channel_name', // name
-      description: 'your_channel_description', // description
+      'ai_calendar_channel', // id
+      'AI Calendar', // name
+      description: 'AI Calendar Notifications', // description
       importance: Importance.high,
     );
 
@@ -159,5 +159,15 @@ class NotifyHelper {
     tz.initializeTimeZones();
     final String timeZone = await FlutterNativeTimezone.getLocalTimezone();
     tz.setLocalLocation(tz.getLocation(timeZone));
+  }
+
+  // Cancel a specific notification
+  Future<void> cancelNotification(String id) async {
+    await flutterLocalNotificationsPlugin.cancel(int.parse(id));
+  }
+
+  // Cancel all notifications
+  Future<void> cancelAllNotifications() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
   }
 }

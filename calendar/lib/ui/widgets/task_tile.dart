@@ -66,6 +66,7 @@ class _TaskTileState extends State<TaskTile> {
           borderRadius: BorderRadius.circular(15),
           border:  Border.all(color :_getBGClr(widget.task?.color ?? 0)),
          // color: _getBGClr(widget.task?.color ?? 0),
+          color: isDark? Colors.grey[900] : Colors.grey[200]
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

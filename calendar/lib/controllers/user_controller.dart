@@ -2,6 +2,7 @@
 
 import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/core/config.dart';
+import 'package:calendar/services/notification_services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -172,6 +173,8 @@ class UserController extends GetxController {
       await prefs.remove('userEmail');
       await prefs.remove('userPassword');
       await prefs.clear();
+      // Clear notifications from system 
+       NotifyHelper().cancelAllNotifications();
       // Remove user from local database
       await DBhelper.deleteAllTasks();
       await DBhelper.deleteUser(user.value.userId!);

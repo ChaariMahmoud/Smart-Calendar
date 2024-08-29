@@ -5,6 +5,7 @@ import 'package:calendar/Models%20/task.dart';
 import 'package:calendar/Models%20/user.dart';
 import 'package:calendar/core/config.dart';
 import 'package:calendar/db/db_helper.dart';
+import 'package:calendar/services/notification_services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
@@ -184,6 +185,7 @@ class TaskController extends GetxController {
     if (response.statusCode == 200) {
       // If successful, delete the task from the local database
       await DBhelper.delete(task);
+      await NotifyHelper().cancelNotification(task.id!);
       print('Task successfully deleted from backend and local database');
     } else {
       // If unsuccessful, throw an exception with the response body
