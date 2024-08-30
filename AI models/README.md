@@ -54,13 +54,13 @@ This repository contains two Jupyter notebooks for processing and analyzing task
 
 #### Creating a Virtual Environment
 
-1. **Create a Virtual Environment**:
+3. **Create a Virtual Environment**:
 
     ```bash
     python -m venv venv
     ```
 
-2. **Activate the Virtual Environment**:
+4. **Activate the Virtual Environment**:
 
     - **Windows**:
       ```bash
@@ -71,7 +71,7 @@ This repository contains two Jupyter notebooks for processing and analyzing task
       source venv/bin/activate
       ```
 
-3. **Install Required Packages**: The required packages are listed in each notebook. You can manually install them using `pip`, for example:
+5. **Install Required Packages**: The required packages are listed in each notebook. You can manually install them using `pip`, for example:
 
     ```bash
     pip install numpy opencv-python torch easyocr google-generativeai
