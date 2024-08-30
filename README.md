@@ -1,6 +1,9 @@
 # IA Calendar
 
 **IA Calendar** is an advanced task management mobile application designed to streamline and personalize daily tasks using AI-powered features. The app is developed using Flutter for the frontend, Node.js for the backend, and AI models for enhanced functionality.
+The app was created with the goal of simplifying daily planning and helping users achieve their goals more efficiently. Whether you're managing personal tasks, work assignments, or anything in between, IA Calendar is designed to adapt to your needs, offering features like AI-powered scheduling, OCR-based task extraction, and real-time notifications.
+The development of IA Calendar is not just about creating an app—it's about pushing the boundaries of what's possible in task management and making a positive impact on how people organize their lives.
+
 
 ## Overview
 
