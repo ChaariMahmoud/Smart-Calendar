@@ -41,7 +41,7 @@ class NotifyHelper {
         AndroidInitializationSettings("appicon");
 
     final InitializationSettings initializationSettings =
-        InitializationSettings(
+        InitializationSettings( 
             iOS: initializationSettingsIOS,
             android: initializationSettingsAndroid);
 
@@ -130,7 +130,7 @@ class NotifyHelper {
   Future<void> displayNotification({required String title, required String body}) async {
     print("Displaying notification: $title, $body");
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-        'your_channel_id', 'your_channel_name',
+        'ai_calendar_channel', 'AI Calendar',
         importance: Importance.max, priority: Priority.high);
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
@@ -163,7 +163,7 @@ class NotifyHelper {
 
   // Cancel a specific notification
   Future<void> cancelNotification(String id) async {
-    await flutterLocalNotificationsPlugin.cancel(int.parse(id));
+    await flutterLocalNotificationsPlugin.cancel(id.hashCode);
   }
 
   // Cancel all notifications

@@ -26,9 +26,9 @@ class MyApp extends StatelessWidget {
       title: 'AI Calendar - Orange Innovation Cup',
     
       
-      theme: Themes.light,
+      theme: Themes.dark,
       
-      darkTheme: Themes.dark,
+      darkTheme: Themes.light,
       themeMode: ThemeService().theme,
       
 
