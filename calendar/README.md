@@ -10,13 +10,13 @@
 - **Task Management**: Users can create, modify, and delete tasks with comprehensive details including title, note, task type, date, start and end times, and priority and difficulty indicators. Tasks are visually organized by date and color-coded for readability.
 - **Progress Tracking**: Each task includes a progress bar, allowing users to track real-time progress.
 - **Local Storage with SQLite**: Local storage is optimized with SQLite, ensuring tasks are saved even during temporary loss of connection.
+- **Notification Service**: Alerts users when a task time starts, even if the app is not running.
+- **Profile Management**: Users can upload their profile photo, change their name, and update their password.
 - **Customization**: Offers light/dark mode options and allows users to personalize notifications and task categories.
 - **Network Status**: Notifies users of their connection status (online/offline).
 - **User Authentication**: Secure login, registration, and password reset via OTP with additional fingerprint login support.
 - **AI-Powered Scheduling**: Automatically schedules tasks based on priority, difficulty, and user productivity data collected from a daily form.
 - **OCR Integration**: Extracts tasks from calendar photos using advanced OCR technology via an API built with Flask and EasyOCR. Includes image cropping functionality to ensure optimal OCR results.
-- **Notification Service**: Alerts users when a task time starts, even if the app is not running.
-- **Profile Management**: Users can upload their profile photo, change their name, and update their password.
 - **Stay Signed In & Biometric Login**: Provides a "Stay signed in" option at login, and supports fingerprint login for Android and Face ID for iOS.
 - **Backend**: Built with Node.js 20, using MongoDB for user and task data storage, JWT for secure authentication, and email OTP for password resets. The backend is hosted on Google Cloud Platform (GCP).
 
@@ -85,8 +85,8 @@ Ensure you have the following installed on your system:
 1. **Clone the Repository**:
    - Use Git to clone the IA Calendar repository:
      ```bash
-     git clone https://github.com/yourusername/IACalendar.git
-     cd IACalendar
+     git clone https://github.com/ChaariMahmoud/Smart-Calendar.git
+     cd calendar
      ```
 
 2. **Get Dependencies**:
