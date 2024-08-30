@@ -1,6 +1,6 @@
 # IA Calendar
 
-**IA Calendar** is an innovative mobile application developed using Flutter 3.22. Designed for intelligent task management, IA Calendar offers a modern interface with advanced features that streamline and personalize daily task management.
+**IA Calendar** is an innovative mobile application developed using Flutter 3.22.3 Designed for intelligent task management, IA Calendar offers a modern interface with advanced features that streamline and personalize daily task management.
 
 ## Key Features
 
@@ -26,10 +26,11 @@
 
 Ensure you have the following installed on your system:
 
-- **Flutter 3.22** (or the latest stable version)
+- **Flutter 3.22.3** (or the latest stable version)
 - **Dart SDK**
-- **Android Studio** (for Android development)
+- **Android Studio 2024.1** (for Android development)
 - **Xcode** (for iOS development, macOS only)
+- **VS Code 1.92.2** (optional, for development)
 - **Git** (for version control)
 
 ### Installing Flutter on Windows
