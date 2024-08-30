@@ -32,13 +32,13 @@ This project is built with the following technologies:
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/iacalendar.git
+    git clone https://github.com/ChaariMahmoud/Smart-Calendar.git
     ```
 
 2. Navigate to the backend folder:
 
     ```bash
-    cd iacalendar/backend
+    cd Smart-Calendar/Backend
     ```
 
 3. Install the dependencies:
