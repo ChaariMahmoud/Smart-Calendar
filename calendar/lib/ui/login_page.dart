@@ -1,4 +1,3 @@
-
 import 'package:calendar/controllers/user_controller.dart';
 import 'package:calendar/db/db_helper.dart';
 import 'package:calendar/ui/send_otp.dart';
@@ -6,6 +5,7 @@ import 'package:calendar/ui/register_page.dart';
 import 'package:calendar/ui/start_page.dart';
 import 'package:calendar/ui/survey_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:local_auth/local_auth.dart';
@@ -27,9 +27,38 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _checkStaySignedIn();
+    _checkDeviceSecurity();
    
   }
+
+  Future<void> _checkDeviceSecurity() async {
+  final bool hasDeviceSecurity = await _hasDeviceSecurity();
+
+  if (!hasDeviceSecurity) {
+    // If the device has no security, prompt the user to set it up
+    Get.defaultDialog(
+      title: "Security Alert",
+      middleText: "Your device is not secured. Please set up a security form to use this app.",
+      onConfirm: () {
+        // You can redirect the user to the home screen or exit the app
+        SystemNavigator.pop(); // Closes the app
+      },
+      textConfirm: "Exit",
+      barrierDismissible: false,
+    );
+  } else {
+    _checkStaySignedIn();
+  }
+}
+
+Future<bool> _hasDeviceSecurity() async {
+  try {
+    return await auth.isDeviceSupported() && await auth.canCheckBiometrics;
+  } on PlatformException catch (e) {
+    print(e);
+    return false; // Assume no security if there's an error checking
+  }
+}
 
   Future<void> _checkStaySignedIn() async {
     final prefs = await SharedPreferences.getInstance();
