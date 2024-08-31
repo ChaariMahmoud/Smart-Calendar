@@ -219,7 +219,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
 
   AppBar _appBar(BuildContext context) {
     return AppBar(
-      elevation: 10,
+      //elevation: 10,
       leading: GestureDetector(
         onTap: () {
           Get.to(HomePage());

@@ -285,7 +285,7 @@ Row(
 
 AppBar _appBar(BuildContext context) {
   return AppBar(
-    elevation: 10,
+    //elevation: 10,
     leading: IconButton(
       icon: const Icon(Icons.arrow_back_ios, size: 25),
       onPressed: () {

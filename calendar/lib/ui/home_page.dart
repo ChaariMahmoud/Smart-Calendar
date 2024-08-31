@@ -29,7 +29,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String currentDate = DateFormat.yMd().format(DateTime.now());
+  String currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
   DateTime _selectedDate = DateTime.now();
   final TaskController _taskController = Get.put(TaskController());
   late NotifyHelper notifyHelper;
@@ -141,7 +141,7 @@ class _HomePageState extends State<HomePage> {
   AppBar _appBar() {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     return AppBar(
-      elevation: 10,
+      //elevation: 10,
       leading: GestureDetector(
         onTap: () {
           ThemeService().switchTheme();

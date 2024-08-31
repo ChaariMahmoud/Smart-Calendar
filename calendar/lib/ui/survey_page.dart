@@ -359,7 +359,7 @@ class _SurveyPageState extends State<SurveyPage> with SingleTickerProviderStateM
   AppBar _appBar() {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     return AppBar(
-      elevation: 10,
+      //elevation: 10,
       leading: GestureDetector(
         onTap: () {
           ThemeService().switchTheme();
